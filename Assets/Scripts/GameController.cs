@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-
+/*
 public class GameController : MonoBehaviour {
 	public int initialTime = 60;
 	public int bonusTime = 10;
@@ -178,3 +178,4 @@ public class GameController : MonoBehaviour {
 
 	#endregion
 }
+*/
