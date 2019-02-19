@@ -12,27 +12,25 @@ public class ColoringSystem : BaseSystem {
 	}
 
 	public override void Update() {
-
+		List<BaseComponent> colorableComponents = Pool.Instance.ComponentsForType(typeof(ColorableComponent));
+		foreach (ColorableComponent cac in colorableComponents) {
+			if (!cac.renderer) {
+				cac.renderer = cac.GetComponent<MeshRenderer>();
+			}
+			if (cac.renderer.material.color != cac.color) {
+				cac.renderer.material.color = cac.color;
+			}
+		}
 	}
 
 	public override void OnComponentAdded(BaseComponent c) {
-		if (c is ColorComponent) {
-			ColorComponent cc = c as ColorComponent;
-			ColorableComponent cac = c.GetComponent<ColorableComponent>();
-			if (cac) {
-				MeshRenderer mr = cac.renderer;
-				if (!mr) {
-					mr = cc.GetComponent<MeshRenderer>();
-				}
-				mr.material.color = new Color(Utils.RandomFloat(1.0f), Utils.RandomFloat(1.0f), Utils.RandomFloat(1.0f)); //cc.color;
-			}
+		if (c is ColorableComponent) {
 
-			GameObject.Destroy(c);
 		}
 	}
 
 	public override void OnComponentRemoved(BaseComponent c) {
-		if (c is ColorComponent) {
+		if (c is ColorableComponent) {
 			
 		}
 	}

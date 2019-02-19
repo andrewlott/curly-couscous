@@ -2,6 +2,6 @@
 using UnityEngine;
 
 public class ColorableComponent : BaseComponent {
-	public MeshRenderer renderer;
+	public Renderer renderer;
 	public Color color;
 }
