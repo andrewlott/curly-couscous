@@ -19,6 +19,10 @@ public class RoundSystem : BaseSystem {
 			Reset(Round);
 		}
 
+		if (GetExistingMatch() != null) {
+			return;
+		}
+
 		List<BaseComponent> matchableComponents = Pool.Instance.ComponentsForType(typeof(MatchableComponent));
 		MatchableComponent target = null;
 		bool hasMatch = true;
@@ -36,65 +40,50 @@ public class RoundSystem : BaseSystem {
 			}
 		}
 
-		if (this.GetExistingMatch() == null && target && hasMatch) {
+		if (target && hasMatch) {
 			GameObject.Find("GameController").AddComponent<MatchComponent>();
 		}
 	}
 
 	public override void OnComponentAdded(BaseComponent c) {
 		if (c is MatchComponent) {
-			this.OnMatch(c.gameObject);
+
 		}
 	}
 
 	public override void OnComponentRemoved(BaseComponent c) {
 		if (c is MatchComponent) {
-			
+			this.OnMatch(c.gameObject);
 		}
 	}
 
-	private MatchComponent GetExistingMatch() {
+	public static bool HasMatch() {
+		List<BaseComponent> matchableComponents = Pool.Instance.ComponentsForType(typeof(MatchableComponent));
+		MatchableComponent target = null;
+		bool hasMatch = true;
+		foreach (MatchableComponent mac in matchableComponents) {
+			ColorableComponent cac = mac.GetComponent<ColorableComponent>();
+
+			if (target == null) {
+				target = mac;
+				continue;
+			}
+
+			Color targetColor = target.GetComponent<ColorableComponent>().color;
+			if (targetColor != cac.color) {
+				hasMatch = false;
+			}
+		}
+
+		return hasMatch;
+	}
+
+	public static MatchComponent GetExistingMatch() {
 		return Pool.Instance.ComponentForType(typeof(MatchComponent)) as MatchComponent;
 	}
 
 	private void OnMatch(GameObject g) {
-		Round++;
-		GameController gc = GameObject.Find("GameController").GetComponent<GameController>();
-		AnimateCorrect(gc.playerBox, null);
-		AnimateCorrect(gc.targetBox, ClearAnimationCallback);
-		foreach (GameObject cube in gc.colorButtons) {
-			AnimateCorrect(cube, null);
-		}
-
-	}
-
-	private void AnimateCorrect(GameObject g, AnimationComponent.CallbackFunction callback) {
-		AnimationComponent ac = g.AddComponent<AnimationComponent>();
-		ac.Trigger = "isCorrect";
-		if (callback != null) {
-			ac.Callback = callback;
-		}
-		ac.CallbackState = "anim_correct";
-	}
-
-	private void AnimateNextRound(GameObject g, AnimationComponent.CallbackFunction callback) {
-		AnimationComponent ac = g.AddComponent<AnimationComponent>();
-//		a.SetBool(ac.Trigger, true); // hack around lazy non-trigger
-		ac.Trigger = "isNextRound";
-		if (callback != null) {
-			ac.Callback = callback;
-			ac.CallbackState = "anim_idle";
-		}
-	}
-
-	public void ClearAnimationCallback(GameObject g) {
-		Reset(Round);
-		GameObject.Destroy(this.GetExistingMatch());
-//		ColorComponent gc = g.GetComponent<ColorComponent>();
-//		GameObject.Destroy(gc);
-//		gc = g.AddComponent<ColorComponent>();
-//		gc.color = ColorType.None;
-//		gc.shouldRandomize = false;
+		Reset(Round++);
 	}
 
 	private void Reset(int round) {

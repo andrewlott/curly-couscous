@@ -4,7 +4,6 @@ using UnityEngine;
 using System.Linq;
 
 public class AnimationSystem : BaseSystem {
-
 	public override void Start() {
 		Pool.Instance.AddSystemListener(typeof(AnimationComponent), this);
 	}
@@ -37,7 +36,6 @@ public class AnimationSystem : BaseSystem {
 			AnimationComponent ac = c as AnimationComponent;
 			Animator a = ac.gameObject.GetComponent<Animator>();
 			a.SetBool(ac.Trigger, true); // hack around lazy non-trigger
-			Debug.Log("AnimationComponent added " + ac.Trigger);
 		}
 	}
 
@@ -46,7 +44,6 @@ public class AnimationSystem : BaseSystem {
 			AnimationComponent ac = c as AnimationComponent;
 			Animator a = ac.gameObject.GetComponent<Animator>();
 			a.SetBool(ac.Trigger, false); // hack around lazy non-trigger
-			Debug.Log("AnimationComponent removed: " + ac.Trigger);
 		}
 	}
 }
