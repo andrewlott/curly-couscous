@@ -14,11 +14,14 @@ public class ColoringSystem : BaseSystem {
 	public override void Update() {
 		List<BaseComponent> colorableComponents = Pool.Instance.ComponentsForType(typeof(ColorableComponent));
 		foreach (ColorableComponent cac in colorableComponents) {
-			if (!cac.renderer) {
-				cac.renderer = cac.GetComponent<MeshRenderer>();
+			if (cac.renderers == null || cac.renderers.Count == 0) {
+				cac.renderers = new List<Renderer>();
+				cac.renderers.Add(cac.GetComponent<MeshRenderer>());
 			}
-			if (cac.renderer.material.color != cac.color) {
-				cac.renderer.material.color = cac.color;
+			foreach (Renderer renderer in cac.renderers) {
+				if (renderer.material.color != cac.color) {
+					renderer.material.color = cac.color;
+				}
 			}
 		}
 	}
