@@ -23,6 +23,8 @@ public class GameController : BaseController {
 		TouchSystem ts = new TouchSystem();
 		AddSystem(ts);
 
+		AnimationSystem ans = new AnimationSystem();
+		AddSystem(ans);
 		DestroySystem ds = new DestroySystem();
 		AddSystem(ds);
 

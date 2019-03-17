@@ -36,12 +36,17 @@ public class AnimationSystem : BaseSystem {
 		if (c is AnimationComponent) {
 			AnimationComponent ac = c as AnimationComponent;
 			Animator a = ac.gameObject.GetComponent<Animator>();
-			a.SetTrigger(ac.Trigger);
+			a.SetBool(ac.Trigger, true); // hack around lazy non-trigger
+			Debug.Log("AnimationComponent added " + ac.Trigger);
 		}
 	}
 
 	public override void OnComponentRemoved(BaseComponent c) {
 		if (c is AnimationComponent) {
+			AnimationComponent ac = c as AnimationComponent;
+			Animator a = ac.gameObject.GetComponent<Animator>();
+			a.SetBool(ac.Trigger, false); // hack around lazy non-trigger
+			Debug.Log("AnimationComponent removed: " + ac.Trigger);
 		}
 	}
 }

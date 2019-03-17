@@ -36,16 +36,14 @@ public class RoundSystem : BaseSystem {
 			}
 		}
 
-		if (target && hasMatch) {
+		if (this.GetExistingMatch() == null && target && hasMatch) {
 			GameObject.Find("GameController").AddComponent<MatchComponent>();
 		}
 	}
 
 	public override void OnComponentAdded(BaseComponent c) {
 		if (c is MatchComponent) {
-			Round++;
-			Reset(Round);
-			GameObject.Destroy(c);
+			this.OnMatch(c.gameObject);
 		}
 	}
 
@@ -53,6 +51,50 @@ public class RoundSystem : BaseSystem {
 		if (c is MatchComponent) {
 			
 		}
+	}
+
+	private MatchComponent GetExistingMatch() {
+		return Pool.Instance.ComponentForType(typeof(MatchComponent)) as MatchComponent;
+	}
+
+	private void OnMatch(GameObject g) {
+		Round++;
+		GameController gc = GameObject.Find("GameController").GetComponent<GameController>();
+		AnimateCorrect(gc.playerBox, null);
+		AnimateCorrect(gc.targetBox, ClearAnimationCallback);
+		foreach (GameObject cube in gc.colorButtons) {
+			AnimateCorrect(cube, null);
+		}
+
+	}
+
+	private void AnimateCorrect(GameObject g, AnimationComponent.CallbackFunction callback) {
+		AnimationComponent ac = g.AddComponent<AnimationComponent>();
+		ac.Trigger = "isCorrect";
+		if (callback != null) {
+			ac.Callback = callback;
+		}
+		ac.CallbackState = "anim_correct";
+	}
+
+	private void AnimateNextRound(GameObject g, AnimationComponent.CallbackFunction callback) {
+		AnimationComponent ac = g.AddComponent<AnimationComponent>();
+//		a.SetBool(ac.Trigger, true); // hack around lazy non-trigger
+		ac.Trigger = "isNextRound";
+		if (callback != null) {
+			ac.Callback = callback;
+			ac.CallbackState = "anim_idle";
+		}
+	}
+
+	public void ClearAnimationCallback(GameObject g) {
+		Reset(Round);
+		GameObject.Destroy(this.GetExistingMatch());
+//		ColorComponent gc = g.GetComponent<ColorComponent>();
+//		GameObject.Destroy(gc);
+//		gc = g.AddComponent<ColorComponent>();
+//		gc.color = ColorType.None;
+//		gc.shouldRandomize = false;
 	}
 
 	private void Reset(int round) {

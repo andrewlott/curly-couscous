@@ -23,8 +23,6 @@ public class ColorButtonTouchComponent : TouchComponent {
 
 	public void OnMouseUpAsButton() { 
 		// Toggle Selected State
-		GameController gameController = GameObject.Find("GameController").GetComponent<GameController>();
-		ColorableComponent cac = gameObject.GetComponent<ColorableComponent>();
-		gameController.playerBox.GetComponent<ColorableComponent>().color = cac.color;
+		this.gameObject.AddComponent<TouchComponent>();
 	}
 }
