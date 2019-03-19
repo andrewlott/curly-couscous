@@ -13,6 +13,12 @@ public class GameController : BaseController {
 	public GameObject targetBox;
 	public List<GameObject> colorButtons; // ordered
 
+	public Text scoreText;
+	public Text timerText;
+
+	public float totalTime = 61.0f;
+	public float bonusTime = 10.0f;
+
 	void Start () {
 
 		// Add systems here
@@ -25,8 +31,11 @@ public class GameController : BaseController {
 
 		AnimationSystem ans = new AnimationSystem();
 		AddSystem(ans);
+		UISystem uis = new UISystem();
+		AddSystem(uis);
 		DestroySystem ds = new DestroySystem();
 		AddSystem(ds);
+
 
 		Enable();
 		StartGame();
@@ -61,5 +70,9 @@ public class GameController : BaseController {
 		} else {
 			gameObject.AddComponent<PauseComponent>();
 		}
+	}
+
+	public void OnBack() {
+
 	}
 }
