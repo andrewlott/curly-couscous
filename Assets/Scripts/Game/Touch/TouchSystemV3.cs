@@ -24,9 +24,10 @@ public class TouchSystem : BaseSystem {
 			if (!IsAnimating) {
 				GameController gameController = GameObject.Find("GameController").GetComponent<GameController>();
 				ColorableComponent cac = c.gameObject.GetComponent<ColorableComponent>();
-				gameController.playerBox.GetComponent<ColorableComponent>().color = cac.color;
-
-				OnTouch();
+				if (cac.color != Color.clear) {
+					gameController.playerBox.GetComponent<ColorableComponent>().color = cac.color;
+					OnTouch();
+				}
 			}
 			GameObject.Destroy(c);
 		}
