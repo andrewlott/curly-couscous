@@ -23,7 +23,7 @@ public class UISystem : BaseSystem {
 
 		int min = ((int) gc.totalTime) / 60;
 		int sec = ((int) gc.totalTime) % 60;
-		gc.timerText.text = string.Format("{0:D2}:{1:D2}", min, sec);
+		gc.timerText.text = string.Format("{0:D2}:{1:D2}", Mathf.Max(min, 0), Mathf.Max(sec, 0));
 		gc.totalTime -= Time.deltaTime;
 	}
 
