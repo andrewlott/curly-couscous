@@ -19,9 +19,15 @@ public class BaseController : MonoBehaviour {
 			return;
 		}
 
+		this.OnUpdate();
+
 		foreach (var s in Systems) {
 			s.Update();
 		}
+	}
+
+	public virtual void OnUpdate() {
+
 	}
 
 	public void Enable() {

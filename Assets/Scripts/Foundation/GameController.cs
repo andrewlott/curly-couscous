@@ -19,6 +19,8 @@ public class GameController : BaseController {
 	public float totalTime = 61.0f;
 	public float bonusTime = 10.0f;
 
+	public float timeScale = 1.0f;
+
 	void Start () {
 
 		// Add systems here
@@ -57,6 +59,12 @@ public class GameController : BaseController {
 		Disable();
 		Systems.Clear();
 		SceneManager.LoadScene("Main");
+	}
+
+	public override void OnUpdate() {
+		if (Time.timeScale != this.timeScale) {
+			Time.timeScale = Mathf.Max(this.timeScale, 0.0f);
+		}
 	}
 
 	public void StartGame() {
