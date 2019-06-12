@@ -36,3 +36,10 @@ sysinfo.txt
 # Builds
 *.apk
 *.unitypackage
+Logs/Packages-Update.log
+Packages/manifest.json
+ProjectSettings/PresetManager.asset
+ProjectSettings/ProjectVersion.txt
+ProjectSettings/VFXManager.asset
+UnityPackageManager/manifest.json
+ProjectSettings/ProjectVersion.txt
