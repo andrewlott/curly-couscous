@@ -103,14 +103,19 @@ public class GameController : BaseController {
 
     }
 
-// Properties
+    // Properties
     public List<GameObject> ColorButtons {
         get {
             if (this._colorButtons == null) {
                 this._colorButtons = new List<GameObject>(GameObject.FindGameObjectsWithTag("Button Cube"));
+                this._colorButtons.Sort(CompareGameObjectByName);
             }
             return this._colorButtons;
         }
+    }
+
+    private static int CompareGameObjectByName(GameObject a, GameObject b) {
+        return string.Compare(a.name, b.name, System.StringComparison.Ordinal);
     }
 
     public GameObject Player {

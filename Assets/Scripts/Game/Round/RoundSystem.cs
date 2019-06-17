@@ -96,8 +96,8 @@ public class RoundSystem : BaseSystem {
 
 		float offset = 0.2f;
 		int index = 0;
-		int lowerBound = Mathf.Max(0, gc.ColorButtons.Count / 2 - round);
-		int upperBound = Mathf.Min(gc.ColorButtons.Count - 1, gc.ColorButtons.Count / 2 + round);
+        int lowerBound = 0;
+        int upperBound = Mathf.Min(2 * round, gc.ColorButtons.Count);
 		int targetIndex = lowerBound + Utils.RandomInt(upperBound - lowerBound);
 		foreach (GameObject go in gc.ColorButtons) {
 			Color buttonColor = Color.clear;
