@@ -23,6 +23,9 @@ public class ColorButtonTouchComponent : TouchComponent {
 
 	public void OnMouseUpAsButton() { 
 		// Toggle Selected State
-		this.gameObject.AddComponent<TouchComponent>();
-	}
+        // HAX
+        if (GameController.Instance.IsEnabled) {
+            this.gameObject.AddComponent<TouchComponent>();
+        }
+    }
 }

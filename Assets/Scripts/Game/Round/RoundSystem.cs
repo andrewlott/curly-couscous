@@ -87,7 +87,7 @@ public class RoundSystem : BaseSystem {
 	}
 
 	private void Reset(int round) {
-		GameController gc = GameObject.Find("GameController").GetComponent<GameController>();
+        GameController gc = GameController.Instance;
 		gc.background.GetComponent<SpriteRenderer>().color = gc.Target.GetComponent<ColorableComponent>().color;
 
 		Color randomColor = new Color(Utils.RandomFloat(1.0f), Utils.RandomFloat(1.0f), Utils.RandomFloat(1.0f));

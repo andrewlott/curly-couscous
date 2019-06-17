@@ -5,10 +5,15 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class GameController : BaseController {
+    private static GameController _instance;
     public Canvas CanvasObject;
 
     // Hax cuz lazy
+    public GameObject adCanvas;
+    public GameObject gameOverCanvas;
     public GameObject background;
+    public GameObject pauseCanvas;
+
     private GameObject _player;
     private GameObject _target;
     private List<GameObject> _colorButtons; // ordered
@@ -20,6 +25,15 @@ public class GameController : BaseController {
     public float bonusTime = 10.0f;
 
     public float timeScale = 1.0f;
+
+    public static GameController Instance {
+        get {
+            if (_instance == null) {
+                _instance = GameObject.Find("GameController").GetComponent<GameController>();
+            }
+            return _instance;
+        }
+    }
 
     void Start() {
 
@@ -35,6 +49,8 @@ public class GameController : BaseController {
         AddSystem(ans);
         UISystem uis = new UISystem();
         AddSystem(uis);
+        PauseSystem ps = new PauseSystem();
+        AddSystem(ps);
         DestroySystem ds = new DestroySystem();
         AddSystem(ds);
 

@@ -22,7 +22,7 @@ public class TouchSystem : BaseSystem {
 	public override void OnComponentAdded(BaseComponent c) {
 		if (c is TouchComponent) {
 			if (!IsAnimating) {
-				GameController gameController = GameObject.Find("GameController").GetComponent<GameController>();
+				GameController gameController = GameController.Instance;
 				ColorableComponent cac = c.gameObject.GetComponent<ColorableComponent>();
 				if (cac.color != Color.clear) {
 					gameController.Player.GetComponent<ColorableComponent>().color = cac.color;
@@ -41,7 +41,7 @@ public class TouchSystem : BaseSystem {
 
 	private void OnTouch() {
 		IsAnimating = true;
-		GameController gc = GameObject.Find("GameController").GetComponent<GameController>();
+		GameController gc = GameController.Instance;
 
 		string trigger = "isIncorrect";
 		AnimationComponent.CallbackFunction doOnceCallback = DefaultClearAnimationCallback;

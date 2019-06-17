@@ -5,11 +5,11 @@ using UnityEngine;
 public class PauseSystem : BaseSystem {
 
 	public override void Start() {
-		Pool.Instance.AddSystemListener(typeof(ColorableComponent), this);
+		Pool.Instance.AddSystemListener(typeof(PauseComponent), this);
 	}
 
 	public override void Stop() {
-		Pool.Instance.RemoveSystemListener(typeof(ColorableComponent), this);
+		Pool.Instance.RemoveSystemListener(typeof(PauseComponent), this);
 	}
 
 	public override void Update() {
@@ -24,7 +24,9 @@ public class PauseSystem : BaseSystem {
 				Animator animator = ac.GetComponent<Animator>();
 				animator.enabled = false;
 			}
-		}
+
+            GameController.Instance.pauseCanvas.SetActive(true);
+        }
 	}
 
 	public override void OnComponentRemoved(BaseComponent c) {
@@ -35,6 +37,8 @@ public class PauseSystem : BaseSystem {
 				Animator animator = ac.GetComponent<Animator>();
 				animator.enabled = true;
 			}
+
+            GameController.Instance.pauseCanvas.SetActive(false);
 		}
 	}
 }

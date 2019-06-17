@@ -15,7 +15,7 @@ public class UISystem : BaseSystem {
 	}
 
 	public override void Update() {
-		GameController gc = Controller() as GameController;
+		GameController gc = GameController.Instance;
 		if (scoreDirty) {
 			gc.scoreText.text = string.Format("Score: {0}", this.score);
 			scoreDirty = false;
@@ -35,7 +35,7 @@ public class UISystem : BaseSystem {
 
 	public override void OnComponentRemoved(BaseComponent c) {
 		if (c is MatchComponent) {
-			GameController gc = Controller() as GameController;
+			GameController gc = GameController.Instance;
 
 			this.score++;
 			this.scoreDirty = true;

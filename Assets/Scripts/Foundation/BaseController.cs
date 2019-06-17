@@ -9,8 +9,12 @@ public class BaseController : MonoBehaviour {
 	public List<BaseSystem> Systems = new List<BaseSystem>();
 
 	private bool _enabled;
-	// Use this for initialization
-	void Start () {
+    public bool IsEnabled {
+        get { return this._enabled; }
+    }
+
+    // Use this for initialization
+    void Start () {
 	}
 	
 	// Update is called once per frame
