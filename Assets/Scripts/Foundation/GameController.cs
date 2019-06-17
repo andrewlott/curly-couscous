@@ -54,6 +54,9 @@ public class GameController : BaseController {
         DestroySystem ds = new DestroySystem();
         AddSystem(ds);
 
+        AdSystem ads = new AdSystem();
+        AddSystem(ads);
+
 
         Enable();
         StartGame();
