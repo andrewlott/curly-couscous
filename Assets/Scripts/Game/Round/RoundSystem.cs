@@ -88,18 +88,18 @@ public class RoundSystem : BaseSystem {
 
 	private void Reset(int round) {
 		GameController gc = GameObject.Find("GameController").GetComponent<GameController>();
-		gc.background.GetComponent<SpriteRenderer>().color = gc.targetBox.GetComponent<ColorableComponent>().color;
+		gc.background.GetComponent<SpriteRenderer>().color = gc.Target.GetComponent<ColorableComponent>().color;
 
 		Color randomColor = new Color(Utils.RandomFloat(1.0f), Utils.RandomFloat(1.0f), Utils.RandomFloat(1.0f));
-		gc.targetBox.GetComponent<ColorableComponent>().color = randomColor;
-		gc.playerBox.GetComponent<ColorableComponent>().color = Color.clear;
+		gc.Target.GetComponent<ColorableComponent>().color = randomColor;
+		gc.Player.GetComponent<ColorableComponent>().color = Color.clear;
 
 		float offset = 0.2f;
 		int index = 0;
-		int lowerBound = Mathf.Max(0, gc.colorButtons.Count / 2 - round);
-		int upperBound = Mathf.Min(gc.colorButtons.Count - 1, gc.colorButtons.Count / 2 + round);
+		int lowerBound = Mathf.Max(0, gc.ColorButtons.Count / 2 - round);
+		int upperBound = Mathf.Min(gc.ColorButtons.Count - 1, gc.ColorButtons.Count / 2 + round);
 		int targetIndex = lowerBound + Utils.RandomInt(upperBound - lowerBound);
-		foreach (GameObject go in gc.colorButtons) {
+		foreach (GameObject go in gc.ColorButtons) {
 			Color buttonColor = Color.clear;
 			if (index == targetIndex) {
 				buttonColor = randomColor;

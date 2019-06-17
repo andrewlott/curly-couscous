@@ -25,7 +25,7 @@ public class TouchSystem : BaseSystem {
 				GameController gameController = GameObject.Find("GameController").GetComponent<GameController>();
 				ColorableComponent cac = c.gameObject.GetComponent<ColorableComponent>();
 				if (cac.color != Color.clear) {
-					gameController.playerBox.GetComponent<ColorableComponent>().color = cac.color;
+					gameController.Player.GetComponent<ColorableComponent>().color = cac.color;
 					OnTouch();
 				}
 			}
@@ -53,9 +53,9 @@ public class TouchSystem : BaseSystem {
 			callbackState = "anim_correct";
 		}
 
-		this.Animate(gc.playerBox, trigger, null, callbackState);
-		this.Animate(gc.targetBox, trigger, doOnceCallback, callbackState);
-		foreach (GameObject cube in gc.colorButtons) {
+		this.Animate(gc.Player, trigger, null, callbackState);
+		this.Animate(gc.Target, trigger, doOnceCallback, callbackState);
+		foreach (GameObject cube in gc.ColorButtons) {
 			this.Animate(cube, trigger, null, callbackState);
 		}
 	}
