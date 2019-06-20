@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class RoundSystem : BaseSystem {
-	private static int Round = 0;
+	private int Round = 0;
 
 	public override void Start() {
 		Pool.Instance.AddSystemListener(typeof(MatchComponent), this);

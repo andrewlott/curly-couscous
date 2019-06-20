@@ -36,6 +36,7 @@ public class GameController : BaseController {
     }
 
     void Start() {
+        this.Restart();
 
         // Add systems here
         RoundSystem rs = new RoundSystem();
@@ -77,7 +78,6 @@ public class GameController : BaseController {
     public void Restart() {
         Disable();
         Systems.Clear();
-        SceneManager.LoadScene("Main");
     }
 
     public override void OnUpdate() {
@@ -100,7 +100,8 @@ public class GameController : BaseController {
     }
 
     public void OnBack() {
-
+        Disable();
+        SceneManager.LoadScene("SplashScene", LoadSceneMode.Single);
     }
 
     // Properties
