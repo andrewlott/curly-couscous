@@ -41,7 +41,7 @@ public class AdSystem : BaseSystem {
         }
     }
 
-    IEnumerator ShowBannerWhenReady() {
+    private IEnumerator ShowBannerWhenReady() {
         while (!Advertisement.IsReady(this._bannerPlacementId)) {
             yield return new WaitForSeconds(0.5f);
         }

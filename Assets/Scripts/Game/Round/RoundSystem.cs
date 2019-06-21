@@ -40,14 +40,22 @@ public class RoundSystem : BaseSystem {
 			}
 		}
 
-		if (target && hasMatch) {
-			GameObject.Find("GameController").AddComponent<MatchComponent>();
-		}
+		if (target) {
+            if (hasMatch) {
+                BaseObject.AddComponent<MatchComponent>();
+            }
+        }
 	}
 
 	public override void OnComponentAdded(BaseComponent c) {
 		if (c is MatchComponent) {
-
+            GameController gc = (Controller() as GameController);
+            gc.score++;
+            gc.matchStreak++;
+            if (gc.matchStreak > gc.maxMatchStreak) {
+                gc.maxMatchStreak = gc.matchStreak;
+            }
+            gc.missStreak = 0;
 		}
 	}
 

@@ -51,9 +51,11 @@ public class TouchSystem : BaseSystem {
 			trigger = "isCorrect";
 			doOnceCallback = ClearCorrectAnimationCallback;
 			callbackState = "anim_correct";
-		}
+        } else {
+            BaseObject.AddComponent<LossComponent>();
+        }
 
-		this.Animate(gc.Player, trigger, null, callbackState);
+        this.Animate(gc.Player, trigger, null, callbackState);
 		this.Animate(gc.Target, trigger, doOnceCallback, callbackState);
 		foreach (GameObject cube in gc.ColorButtons) {
 			this.Animate(cube, trigger, null, callbackState);

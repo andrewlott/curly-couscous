@@ -6,7 +6,13 @@ using UnityEngine.SceneManagement;
 
 public class GameController : BaseController {
     private static GameController _instance;
-    public Canvas CanvasObject;
+
+    // Modes
+    public bool livesMode;
+    // TODO: Add time system
+    public bool timeMode;
+
+    public GameObject gameplayCanvas;
 
     // Hax cuz lazy
     public GameObject adCanvas;
@@ -18,9 +24,22 @@ public class GameController : BaseController {
     private GameObject _target;
     private List<GameObject> _colorButtons; // ordered
 
-    public Text scoreText;
+    // Gameplay Canvas
+    public Text gameplayScoreText;
     public Text timerText;
+    public Text livesText;
 
+    // Gameover Canvas
+    public Text gameOverScoreText;
+    public Text gameOverHighScoreText;
+    public Text gameOverStreakText;
+
+    // Gameplay elements
+    public int score;
+    public int numberOfLives = 5;
+    public int matchStreak;
+    public int maxMatchStreak;
+    public int missStreak;
     public float totalTime = 61.0f;
     public float bonusTime = 10.0f;
 
@@ -41,6 +60,8 @@ public class GameController : BaseController {
         // Add systems here
         RoundSystem rs = new RoundSystem();
         AddSystem(rs);
+        LivesSystem ls = new LivesSystem();
+        AddSystem(ls);
         ColoringSystem cs = new ColoringSystem();
         AddSystem(cs);
         TouchSystem ts = new TouchSystem();
@@ -88,6 +109,11 @@ public class GameController : BaseController {
 
     public void StartGame() {
 
+    }
+
+    public void NewGame() {
+        Restart();
+        SceneManager.LoadScene("GameScene", LoadSceneMode.Single);
     }
 
     public void Pause() {
