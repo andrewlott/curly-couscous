@@ -96,10 +96,11 @@ public class RoundSystem : BaseSystem {
 
 	private void Reset(int round) {
         GameController gc = GameController.Instance;
-		gc.background.GetComponent<SpriteRenderer>().color = gc.Target.GetComponent<ColorableComponent>().color;
+        Color currentColor = gc.Target.GetComponent<ColorableComponent>().color;
+        Color randomColor = RandomColor();
 
-		Color randomColor = new Color(Utils.RandomFloat(1.0f), Utils.RandomFloat(1.0f), Utils.RandomFloat(1.0f));
-		gc.Target.GetComponent<ColorableComponent>().color = randomColor;
+        gc.background.GetComponent<SpriteRenderer>().color = currentColor == Color.clear ? RandomColor() : currentColor;
+        gc.Target.GetComponent<ColorableComponent>().color = randomColor;
 		gc.Player.GetComponent<ColorableComponent>().color = Color.clear;
 
 		float offset = 0.2f;
@@ -124,4 +125,8 @@ public class RoundSystem : BaseSystem {
 			index++;
 		}
 	}
+
+    private Color RandomColor() {
+        return new Color(Utils.RandomFloat(1.0f), Utils.RandomFloat(1.0f), Utils.RandomFloat(1.0f));
+    }
 }
