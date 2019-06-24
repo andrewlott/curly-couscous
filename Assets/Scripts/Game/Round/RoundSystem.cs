@@ -91,7 +91,7 @@ public class RoundSystem : BaseSystem {
 	}
 
 	private void OnMatch(GameObject g) {
-		Reset(Round++);
+        Reset(Round++);
 	}
 
 	private void Reset(int round) {
@@ -124,7 +124,11 @@ public class RoundSystem : BaseSystem {
 			cac.color = buttonColor;
 			index++;
 		}
-	}
+
+        if (gc.firstAdLevel == round) {
+            gc.gameObject.AddComponent<AdComponent>();
+        }
+    }
 
     private Color RandomColor() {
         return new Color(Utils.RandomFloat(1.0f), Utils.RandomFloat(1.0f), Utils.RandomFloat(1.0f));
