@@ -50,12 +50,7 @@ public class RoundSystem : BaseSystem {
 	public override void OnComponentAdded(BaseComponent c) {
 		if (c is MatchComponent) {
             GameController gc = (Controller() as GameController);
-            gc.score++;
-            gc.matchStreak++;
-            if (gc.matchStreak > gc.maxMatchStreak) {
-                gc.maxMatchStreak = gc.matchStreak;
-            }
-            gc.missStreak = 0;
+            gc.Score++;
 		}
 	}
 

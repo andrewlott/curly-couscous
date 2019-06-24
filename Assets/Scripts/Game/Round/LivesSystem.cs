@@ -18,12 +18,9 @@ public class LivesSystem : BaseSystem {
 	public override void OnComponentAdded(BaseComponent c) {
 		if (c is LossComponent) {
             GameController gc = (Controller() as GameController);
-            gc.missStreak++;
-            gc.matchStreak = 0;
-
             if (gc.livesMode) {
-                gc.numberOfLives--;
-                if (gc.numberOfLives <= 0) {
+                gc.Lives--;
+                if (gc.Lives <= 0) {
                     gc.HandleCoroutine(GameOver());
                 }
             }

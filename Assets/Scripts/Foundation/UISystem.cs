@@ -3,15 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class UISystem : BaseSystem {
-	bool scoreDirty = true;
-    bool livesDirty;
 
 	public override void Start() {
 		Pool.Instance.AddSystemListener(typeof(MatchComponent), this);
         Pool.Instance.AddSystemListener(typeof(LossComponent), this);
 
         GameController gc = GameController.Instance;
-        this.livesDirty = gc.livesMode;
         gc.livesText.gameObject.SetActive(gc.livesMode);
         gc.timerText.gameObject.SetActive(gc.timeMode);
     }
@@ -23,29 +20,29 @@ public class UISystem : BaseSystem {
 
     public override void Update() {
 		GameController gc = GameController.Instance;
-        if (scoreDirty || livesDirty) {
+        if (gc.scoreDirty || gc.livesDirty) {
             gc.gameOverStreakText.text = string.Format("{0} Streak", gc.maxMatchStreak);
 
-            if (scoreDirty) {
-                int score = gc.score;
+            if (gc.scoreDirty) {
+                int score = gc.Score;
                 int highScore = PlayerPrefs.GetInt("highScore");
                 if (score > highScore) {
                     PlayerPrefs.SetInt("highScore", score);
                     highScore = score;
                 }
 
-                gc.gameplayScoreText.text = string.Format("Score: {0}", gc.score);
-                gc.gameOverScoreText.text = string.Format("{0}", gc.score);
-                gc.pauseScoreText.text = string.Format("{0}", gc.score);
+                gc.gameplayScoreText.text = string.Format("Score: {0}", gc.Score);
+                gc.gameOverScoreText.text = string.Format("{0}", gc.Score);
+                gc.pauseScoreText.text = string.Format("{0}", gc.Score);
                 gc.gameOverHighScoreText.text = string.Format("{0}", highScore);
                 gc.pauseHighScoreText.text = string.Format("{0}", highScore);
             }
 
-            if (gc.livesMode && livesDirty) {
-                gc.livesText.text = string.Format("Lives: {0}", Mathf.Max(gc.numberOfLives, 0));
+            if (gc.livesMode && gc.livesDirty) {
+                gc.livesText.text = string.Format("Lives: {0}", Mathf.Max(gc.Lives, 0));
             }
-            scoreDirty = false;
-            livesDirty = false;
+            gc.scoreDirty = false;
+            gc.livesDirty = false;
         }
 
         if (gc.timeMode) {
@@ -68,9 +65,6 @@ public class UISystem : BaseSystem {
 		if (c is MatchComponent) {
 			GameController gc = GameController.Instance;
             gc.totalTime += gc.bonusTime;
-            this.scoreDirty = true;
-		} else if (c is LossComponent) {
-            this.livesDirty = true;
-        }
+		}
     }
 }

@@ -39,8 +39,27 @@ public class GameController : BaseController {
     public Text pauseHighScoreText;
 
     // Gameplay elements
-    public int score;
-    public int numberOfLives = 5;
+    [SerializeField]
+    private int _score;
+    public int Score {
+        get { return _score; }
+        set {
+            _score = value;
+            scoreDirty = true;
+        }
+    }
+    public bool scoreDirty = true;
+    [SerializeField]
+    private int _lives = 5;
+    public int Lives {
+        get { return _lives; }
+        set {
+            _lives = value;
+            livesDirty = true;
+        }
+    }
+    public bool livesDirty = true;
+    public int matchStreakForStock = 10;
     public int matchStreak;
     public int maxMatchStreak;
     public int missStreak;
@@ -67,6 +86,8 @@ public class GameController : BaseController {
         AddSystem(rs);
         LivesSystem ls = new LivesSystem();
         AddSystem(ls);
+        StreakSystem ss = new StreakSystem();
+        AddSystem(ss);
         ColoringSystem cs = new ColoringSystem();
         AddSystem(cs);
         TouchSystem ts = new TouchSystem();
