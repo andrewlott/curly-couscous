@@ -97,21 +97,17 @@ public class RoundSystem : BaseSystem {
         gc.Target.GetComponent<ColorableComponent>().color = randomColor;
 		gc.Player.GetComponent<ColorableComponent>().color = Color.clear;
 
-		float offset = 0.2f;
 		int index = 0;
         int lowerBound = 0;
-        int upperBound = Mathf.Min(2 * round, gc.ColorButtons.Count);
+        int upperBound = Mathf.Min(gc.numberOfButtons, gc.ColorButtons.Count);
 		int targetIndex = lowerBound + Utils.RandomInt(upperBound - lowerBound);
+        Debug.Log(targetIndex);
 		foreach (GameObject go in gc.ColorButtons) {
 			Color buttonColor = Color.clear;
 			if (index == targetIndex) {
 				buttonColor = randomColor;
-			} else if (index >= lowerBound && index <= upperBound) {
-				float r =  randomColor.r - (offset / 2.0f) + Utils.RandomFloat(offset);
-				float g =  randomColor.g - (offset / 2.0f) + Utils.RandomFloat(offset);
-				float b =  randomColor.b - (offset / 2.0f) + Utils.RandomFloat(offset);
-
-				buttonColor = new Color(r, g, b);
+			} else if (index >= lowerBound && index < upperBound) {
+                buttonColor = SimilarColor(randomColor);
 			}
 				
 			ColorableComponent cac = go.GetComponent<ColorableComponent>();
@@ -127,5 +123,15 @@ public class RoundSystem : BaseSystem {
 
     private Color RandomColor() {
         return new Color(Utils.RandomFloat(1.0f), Utils.RandomFloat(1.0f), Utils.RandomFloat(1.0f));
+    }
+
+    private Color SimilarColor(Color c) {
+        GameController gc = (Controller() as GameController);
+        float offset = 1.0f / gc.difficulty;
+
+        float r = Mathf.Max(Mathf.Min(c.r - offset + Utils.RandomFloat(offset), 1.0f), 0.0f);
+        float g = Mathf.Max(Mathf.Min(c.g - offset + Utils.RandomFloat(offset), 1.0f), 0.0f);
+        float b = Mathf.Max(Mathf.Min(c.b - offset + Utils.RandomFloat(offset), 1.0f), 0.0f);
+        return new Color(r, g, b);
     }
 }

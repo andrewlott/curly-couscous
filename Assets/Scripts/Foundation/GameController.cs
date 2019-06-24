@@ -65,7 +65,9 @@ public class GameController : BaseController {
     public int missStreak;
     public float totalTime = 61.0f;
     public float bonusTime = 10.0f;
+    public int numberOfButtons = 3;
     public int firstAdLevel = 3;
+    public int difficulty = 1;
 
     public float timeScale = 1.0f;
     public float lastMatchTime;
