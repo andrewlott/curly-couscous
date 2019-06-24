@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class UISystem : BaseSystem {
+    private int _internalScore;
 
 	public override void Start() {
 		Pool.Instance.AddSystemListener(typeof(MatchComponent), this);
@@ -31,7 +32,7 @@ public class UISystem : BaseSystem {
                     highScore = score;
                 }
 
-                gc.gameplayScoreText.text = string.Format("Score: {0}", gc.Score);
+                gc.HandleCoroutine(LerpToScore());
                 gc.gameOverScoreText.text = string.Format("{0}", gc.Score);
                 gc.pauseScoreText.text = string.Format("{0}", gc.Score);
                 gc.gameOverHighScoreText.text = string.Format("{0}", highScore);
@@ -66,5 +67,16 @@ public class UISystem : BaseSystem {
 			GameController gc = GameController.Instance;
             gc.totalTime += gc.bonusTime;
 		}
+    }
+
+    private IEnumerator LerpToScore() {
+        GameController gc = (Controller() as GameController);
+        while (this._internalScore != gc.Score) {
+            gc.gameplayScoreText.text = string.Format("Score: {0}", this._internalScore);
+            this._internalScore += 10;
+            yield return new WaitForSeconds(0.0f);
+        }
+        gc.gameplayScoreText.text = string.Format("Score: {0}", gc.Score);
+
     }
 }
