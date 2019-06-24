@@ -24,15 +24,19 @@ public class GameController : BaseController {
     private GameObject _target;
     private List<GameObject> _colorButtons; // ordered
 
+    // Gameover Canvas
+    public Text gameOverScoreText;
+    public Text gameOverHighScoreText;
+    public Text gameOverStreakText;
+
     // Gameplay Canvas
     public Text gameplayScoreText;
     public Text timerText;
     public Text livesText;
 
-    // Gameover Canvas
-    public Text gameOverScoreText;
-    public Text gameOverHighScoreText;
-    public Text gameOverStreakText;
+    // Pause Canvas
+    public Text pauseScoreText;
+    public Text pauseHighScoreText;
 
     // Gameplay elements
     public int score;

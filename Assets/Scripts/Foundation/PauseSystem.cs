@@ -18,27 +18,31 @@ public class PauseSystem : BaseSystem {
 
 	public override void OnComponentAdded(BaseComponent c) {
 		if (c is PauseComponent) {
-			Controller().TogglePause();
+            GameController gc = (Controller() as GameController);
+			gc.TogglePause();
 			List<BaseComponent> animationComponents = Pool.Instance.ComponentsForType(typeof(AnimatedComponent));
 			foreach (AnimatedComponent ac in animationComponents) {
 				Animator animator = ac.GetComponent<Animator>();
 				animator.enabled = false;
 			}
 
-            GameController.Instance.pauseCanvas.SetActive(true);
+            gc.gameplayCanvas.SetActive(false);
+            gc.pauseCanvas.SetActive(true);
         }
 	}
 
 	public override void OnComponentRemoved(BaseComponent c) {
 		if (c is PauseComponent) {
-			Controller().TogglePause();
-			List<BaseComponent> animationComponents = Pool.Instance.ComponentsForType(typeof(AnimatedComponent));
+            GameController gc = (Controller() as GameController);
+            gc.TogglePause(); 
+            List<BaseComponent> animationComponents = Pool.Instance.ComponentsForType(typeof(AnimatedComponent));
 			foreach (AnimatedComponent ac in animationComponents) {
 				Animator animator = ac.GetComponent<Animator>();
 				animator.enabled = true;
 			}
 
-            GameController.Instance.pauseCanvas.SetActive(false);
+            gc.gameplayCanvas.SetActive(true);
+            gc.pauseCanvas.SetActive(false);
 		}
 	}
 }

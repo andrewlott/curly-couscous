@@ -36,7 +36,9 @@ public class UISystem : BaseSystem {
 
                 gc.gameplayScoreText.text = string.Format("Score: {0}", gc.score);
                 gc.gameOverScoreText.text = string.Format("{0}", gc.score);
+                gc.pauseScoreText.text = string.Format("{0}", gc.score);
                 gc.gameOverHighScoreText.text = string.Format("{0}", highScore);
+                gc.pauseHighScoreText.text = string.Format("{0}", highScore);
             }
 
             if (gc.livesMode && livesDirty) {
