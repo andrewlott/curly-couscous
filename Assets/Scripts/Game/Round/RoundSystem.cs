@@ -127,11 +127,11 @@ public class RoundSystem : BaseSystem {
 
     private Color SimilarColor(Color c) {
         GameController gc = (Controller() as GameController);
-        float offset = 1.0f / gc.difficulty;
+        float offset = 1.0f / gc.difficulty; // Magic equation that feels nice
 
-        float r = Mathf.Max(Mathf.Min(c.r - offset + Utils.RandomFloat(offset), 1.0f), 0.0f);
-        float g = Mathf.Max(Mathf.Min(c.g - offset + Utils.RandomFloat(offset), 1.0f), 0.0f);
-        float b = Mathf.Max(Mathf.Min(c.b - offset + Utils.RandomFloat(offset), 1.0f), 0.0f);
+        float r = Mathf.Max(Mathf.Min(c.r - (offset / 2.0f) + Utils.RandomFloat(offset), 1.0f), 0.0f);
+        float g = Mathf.Max(Mathf.Min(c.g - (offset / 2.0f) + Utils.RandomFloat(offset), 1.0f), 0.0f);
+        float b = Mathf.Max(Mathf.Min(c.b - (offset / 2.0f) + Utils.RandomFloat(offset), 1.0f), 0.0f);
         return new Color(r, g, b);
     }
 }

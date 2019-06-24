@@ -19,10 +19,12 @@ public class AdSystem : BaseSystem {
         Monetization.Initialize(this._gameId, this._testMode);
         Advertisement.Initialize(this._gameId, this._testMode);
         //Advertisement.Banner.SetPosition(BannerPosition.BOTTOM_CENTER); // default
+        Advertisement.Banner.Hide();
     }
 
     public override void Stop() {
-		Pool.Instance.RemoveSystemListener(typeof(AdComponent), this);
+        Advertisement.Banner.Hide();
+        Pool.Instance.RemoveSystemListener(typeof(AdComponent), this);
 	}
 
 	public override void Update() {
