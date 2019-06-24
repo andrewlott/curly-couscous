@@ -49,8 +49,7 @@ public class RoundSystem : BaseSystem {
 
 	public override void OnComponentAdded(BaseComponent c) {
 		if (c is MatchComponent) {
-            GameController gc = (Controller() as GameController);
-            gc.Score++;
+
 		}
 	}
 
@@ -123,6 +122,7 @@ public class RoundSystem : BaseSystem {
         if (gc.firstAdLevel == round) {
             gc.gameObject.AddComponent<AdComponent>();
         }
+        (Controller() as GameController).lastMatchTime = Time.time;
     }
 
     private Color RandomColor() {

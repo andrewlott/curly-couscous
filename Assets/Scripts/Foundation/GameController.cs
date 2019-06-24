@@ -40,7 +40,7 @@ public class GameController : BaseController {
 
     // Gameplay elements
     [SerializeField]
-    private int _score;
+    private int _score = 0;
     public int Score {
         get { return _score; }
         set {
@@ -68,6 +68,7 @@ public class GameController : BaseController {
     public int firstAdLevel = 3;
 
     public float timeScale = 1.0f;
+    public float lastMatchTime;
 
     public static GameController Instance {
         get {
@@ -88,6 +89,8 @@ public class GameController : BaseController {
         AddSystem(ls);
         StreakSystem ss = new StreakSystem();
         AddSystem(ss);
+        ScoreSystem scs = new ScoreSystem();
+        AddSystem(scs);
         ColoringSystem cs = new ColoringSystem();
         AddSystem(cs);
         TouchSystem ts = new TouchSystem();
