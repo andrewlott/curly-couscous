@@ -22,6 +22,17 @@ public class UISystem : BaseSystem {
     public override void Update() {
 		GameController gc = GameController.Instance;
         if (gc.scoreDirty || gc.livesDirty) {
+            if (gc.matchStreak > 1) {
+                AnimationComponent.Animate(
+                    gc.streakText.GetComponentInParent<Animator>().gameObject,
+                    "isStreak",
+                    false,
+                    null,
+                    "anim_streaktext"
+                );
+
+                gc.streakText.text = string.Format("{0} STREAK!", gc.matchStreak);
+            }
             gc.gameOverStreakText.text = string.Format("{0} Streak", gc.maxMatchStreak);
 
             if (gc.scoreDirty) {

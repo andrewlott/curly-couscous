@@ -33,6 +33,7 @@ public class GameController : BaseController {
     public Text gameplayScoreText;
     public Text timerText;
     public Text livesText;
+    public Text streakText;
 
     // Pause Canvas
     public Text pauseScoreText;

@@ -43,7 +43,9 @@ public class AnimationSystem : BaseSystem {
 		if (c is AnimationComponent) {
 			AnimationComponent ac = c as AnimationComponent;
 			Animator a = ac.gameObject.GetComponent<Animator>();
-			a.SetBool(ac.Trigger, false); // hack around lazy non-trigger
-		}
+            if (!ac.LeaveTriggerOn) {
+                a.SetBool(ac.Trigger, false); // hack around lazy non-trigger
+            }
+        }
 	}
 }

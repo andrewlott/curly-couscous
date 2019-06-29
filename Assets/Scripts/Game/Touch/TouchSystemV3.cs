@@ -55,18 +55,11 @@ public class TouchSystem : BaseSystem {
             BaseObject.AddComponent<LossComponent>();
         }
 
-        this.Animate(gc.Player, trigger, null, callbackState);
-		this.Animate(gc.Target, trigger, doOnceCallback, callbackState);
+        AnimationComponent.Animate(gc.Player, trigger, false, null, callbackState);
+		AnimationComponent.Animate(gc.Target, trigger, false, doOnceCallback, callbackState);
 		foreach (GameObject cube in gc.ColorButtons) {
-			this.Animate(cube, trigger, null, callbackState);
+			AnimationComponent.Animate(cube, trigger, false, null, callbackState);
 		}
-	}
-
-	private void Animate(GameObject g, string trigger, AnimationComponent.CallbackFunction callback, string callbackState) {
-		AnimationComponent ac = g.AddComponent<AnimationComponent>();
-		ac.Trigger = trigger;
-		ac.Callback = callback;
-		ac.CallbackState = callbackState;
 	}
 
 	public void DefaultClearAnimationCallback(GameObject g) {

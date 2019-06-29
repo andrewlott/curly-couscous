@@ -15,6 +15,7 @@ public class RoundSystem : BaseSystem {
 
 	public override void Update() {
 		if (Round == 0) {
+            AnimateIn();
 			Round++;
 			Reset(Round);
 		}
@@ -87,6 +88,18 @@ public class RoundSystem : BaseSystem {
 	private void OnMatch(GameObject g) {
         Reset(Round++);
 	}
+
+    private void AnimateIn() {
+        GameController gc = GameController.Instance;
+        string trigger = "isOn";
+        string callbackState = "anim_appear";
+
+        AnimationComponent.Animate(gc.Player, trigger, true, null, callbackState);
+        AnimationComponent.Animate(gc.Target, trigger, true, null, callbackState);
+        foreach (GameObject cube in gc.ColorButtons) {
+            AnimationComponent.Animate(cube, trigger, true, null, callbackState);
+        }
+    }
 
 	private void Reset(int round) {
         GameController gc = GameController.Instance;
