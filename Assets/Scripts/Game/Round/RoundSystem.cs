@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class RoundSystem : BaseSystem {
-	private int Round = 0;
-
 	public override void Start() {
 		Pool.Instance.AddSystemListener(typeof(MatchComponent), this);
 	}
@@ -14,10 +12,10 @@ public class RoundSystem : BaseSystem {
 	}
 
 	public override void Update() {
-		if (Round == 0) {
-            AnimateIn();
-			Round++;
-			Reset(Round);
+        int round = (Controller() as GameController).round;
+		if (round == 0) {
+            (Controller() as GameController).round++;
+			Reset(round);
 		}
 
 		if (GetExistingMatch() != null) {
@@ -86,20 +84,8 @@ public class RoundSystem : BaseSystem {
 	}
 
 	private void OnMatch(GameObject g) {
-        Reset(Round++);
+        Reset((Controller() as GameController).round++);
 	}
-
-    private void AnimateIn() {
-        GameController gc = GameController.Instance;
-        string trigger = "isOn";
-        string callbackState = "anim_appear";
-
-        AnimationComponent.Animate(gc.Player, trigger, true, null, callbackState);
-        AnimationComponent.Animate(gc.Target, trigger, true, null, callbackState);
-        for (int i = 0; i < gc.numberOfButtons; i++) {
-            AnimationComponent.Animate(gc.ColorButtons[i], trigger, true, null, callbackState);
-        }
-    }
 
 	private void Reset(int round) {
         GameController gc = GameController.Instance;

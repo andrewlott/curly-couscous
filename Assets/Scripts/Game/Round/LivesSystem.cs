@@ -39,6 +39,6 @@ public class LivesSystem : BaseSystem {
         GameController gc = (Controller() as GameController);
         gc.gameplayCanvas.SetActive(false);
         gc.gameOverCanvas.SetActive(true);
-        gc.Disable();
+        gc.EndGame();
     }
 }

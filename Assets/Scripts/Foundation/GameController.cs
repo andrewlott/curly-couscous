@@ -15,9 +15,9 @@ public class GameController : BaseController {
     public GameObject gameplayCanvas;
 
     // Hax cuz lazy
-    public GameObject adCanvas;
     public GameObject gameOverCanvas;
     public GameObject background;
+    public GameObject mainMenuCanvas;
     public GameObject pauseCanvas;
 
     private GameObject _player;
@@ -35,6 +35,9 @@ public class GameController : BaseController {
     public Text livesText;
     public Text streakText;
 
+    // Main menu
+    public Text mainMenuHighScoreText;
+
     // Pause Canvas
     public Text pauseScoreText;
     public Text pauseHighScoreText;
@@ -50,8 +53,8 @@ public class GameController : BaseController {
         }
     }
     public bool scoreDirty = true;
-    [SerializeField]
-    private int _lives = 5;
+    public int initialLives;
+    private int _lives;
     public int Lives {
         get { return _lives; }
         set {
@@ -64,11 +67,13 @@ public class GameController : BaseController {
     public int matchStreak;
     public int maxMatchStreak;
     public int missStreak;
-    public float totalTime = 61.0f;
+    public float initialTotalTime = 61.0f;
+    public float totalTime;
     public float bonusTime = 10.0f;
     public int numberOfButtons = 3;
     public int firstAdLevel = 3;
     public int difficulty = 1;
+    public int round = 0;
 
     public float timeScale = 1.0f;
     public float lastMatchTime;
@@ -83,8 +88,6 @@ public class GameController : BaseController {
     }
 
     void Start() {
-        this.Restart();
-
         // Add systems here
         RoundSystem rs = new RoundSystem();
         AddSystem(rs);
@@ -111,13 +114,12 @@ public class GameController : BaseController {
         AdSystem ads = new AdSystem();
         AddSystem(ads);
 
-
         Enable();
-        StartGame();
         ExtraSetup();
     }
 
     private void ExtraSetup() {
+        this.mainMenuHighScoreText.text = string.Format("{0}", PlayerPrefs.GetInt("highScore"));
         GameObject debug = GameObject.Find("Debug");
         if (debug != null) {
 #if UNITY_EDITOR
@@ -129,8 +131,11 @@ public class GameController : BaseController {
     }
 
     public void Restart() {
+        this.round = 0;
+        this.Lives = this.initialLives;
+        this.Score = 0;
+        this.difficulty = 1;
         Disable();
-        Systems.Clear();
     }
 
     public override void OnUpdate() {
@@ -140,12 +145,29 @@ public class GameController : BaseController {
     }
 
     public void StartGame() {
-
+        Enable();
+        AnimateCubes(true);
     }
 
     public void NewGame() {
         Restart();
-        SceneManager.LoadScene("GameScene", LoadSceneMode.Single);
+        StartGame();
+        mainMenuCanvas.gameObject.SetActive(false);
+        gameOverCanvas.gameObject.SetActive(false);
+        gameplayCanvas.SetActive(true);
+        /*
+        AnimationComponent.Animate(
+            mainMenuCanvas.gameObject,
+            "main menu_off",
+            false,
+            null,
+           "anim_mainmenu_off"
+        );
+        */
+    }
+
+    public void EndGame() {
+        AnimateCubes(false);
     }
 
     public void Pause() {
@@ -158,8 +180,37 @@ public class GameController : BaseController {
     }
 
     public void OnBack() {
-        Disable();
-        SceneManager.LoadScene("SplashScene", LoadSceneMode.Single);
+        EndGame();
+        /*
+        AnimationComponent.Animate(
+            mainMenuCanvas.gameObject,
+            "main menu on",
+            false,
+            null,
+            "anim_mainmenu_on"
+        );
+        */
+        //SceneManager.LoadScene("SplashScene", LoadSceneMode.Single);
+    }
+
+    private void AnimateCubes(bool show) {
+        string trigger = "isOn" ;
+        string callbackState = show ? "anim_appear" : "anim_idle";
+        AnimationComponent.CallbackFunction doOnceCallback = null;
+        if (!show) {
+            doOnceCallback = EndGameCallback;
+        }
+
+        AnimationComponent.Animate(this.Player, trigger, show, null, callbackState);
+        AnimationComponent.Animate(this.Target, trigger, show, doOnceCallback, callbackState);
+        for (int i = 0; i < this.numberOfButtons; i++) {
+            AnimationComponent.Animate(this.ColorButtons[i], trigger, show, null, callbackState);
+        }
+    }
+
+    public void EndGameCallback(GameObject g) {
+        mainMenuCanvas.gameObject.SetActive(true);
+        gameplayCanvas.SetActive(false);
     }
 
     // Properties
