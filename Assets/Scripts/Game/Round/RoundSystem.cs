@@ -96,8 +96,8 @@ public class RoundSystem : BaseSystem {
 
         AnimationComponent.Animate(gc.Player, trigger, true, null, callbackState);
         AnimationComponent.Animate(gc.Target, trigger, true, null, callbackState);
-        foreach (GameObject cube in gc.ColorButtons) {
-            AnimationComponent.Animate(cube, trigger, true, null, callbackState);
+        for (int i = 0; i < gc.numberOfButtons; i++) {
+            AnimationComponent.Animate(gc.ColorButtons[i], trigger, true, null, callbackState);
         }
     }
 
@@ -105,10 +105,10 @@ public class RoundSystem : BaseSystem {
         GameController gc = GameController.Instance;
         Color currentColor = gc.Target.GetComponent<ColorableComponent>().color;
         Color randomColor = RandomColor();
-
-        gc.background.GetComponent<SpriteRenderer>().color = currentColor == Color.clear ? RandomColor() : currentColor;
+        Color bgColor = currentColor == Color.clear ? RandomColor() : currentColor;
+        gc.background.GetComponent<SpriteRenderer>().color = bgColor;
         gc.Target.GetComponent<ColorableComponent>().color = randomColor;
-		gc.Player.GetComponent<ColorableComponent>().color = Color.clear;
+        gc.Player.GetComponent<ColorableComponent>().color = bgColor;
 
 		int index = 0;
         int lowerBound = 0;
@@ -122,9 +122,11 @@ public class RoundSystem : BaseSystem {
 			} else if (index >= lowerBound && index < upperBound) {
                 buttonColor = SimilarColor(randomColor);
 			}
-				
-			ColorableComponent cac = go.GetComponent<ColorableComponent>();
-			cac.color = buttonColor;
+
+            if (buttonColor != Color.clear) {
+                ColorableComponent cac = go.GetComponent<ColorableComponent>();
+                cac.color = buttonColor;
+            }
 			index++;
 		}
 

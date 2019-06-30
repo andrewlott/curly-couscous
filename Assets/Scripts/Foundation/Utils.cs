@@ -17,6 +17,10 @@ public static class Utils {
 		}  
 	}
 
+    public static bool RandomBool() {
+        return Utils.RandomInt(2) > 0 ? true : false;
+    }
+
 	public static int RandomInt(int max) {
 		return rng.Next(max);
 	}

@@ -24,29 +24,44 @@ public class StreakSystem : BaseSystem {
             if (gc.matchStreak > gc.maxMatchStreak) {
                 gc.maxMatchStreak = gc.matchStreak;
             }
-            gc.missStreak = 0;
 
-            // TODO: Pop UI
             if (gc.matchStreak > 0) {
                 if (gc.matchStreak % gc.matchStreakForStock == 0) {
                     gc.Lives++;
                 }
 
                 if (gc.matchStreak % 2 == 0) {
-                    gc.numberOfButtons = Mathf.Min(gc.numberOfButtons + 2, gc.ColorButtons.Count);
+                    int newNumberOfButtons = gc.numberOfButtons + 2;
+                    for (int i = gc.numberOfButtons; i < newNumberOfButtons; i++) {
+                        AnimationComponent.Animate(
+                            gc.ColorButtons[i],
+                            "isOn",
+                            true,
+                            null,
+                            "anim_appear"
+                        );
+                    }
+                    gc.numberOfButtons = Mathf.Min(newNumberOfButtons, gc.ColorButtons.Count);
                 }
 
                 if (gc.matchStreak > 1) {
                     gc.difficulty += 1;
                 }
             }
-        } else if (c is LossComponent) {
-            GameController gc = (Controller() as GameController);
-            gc.missStreak++;
-            gc.matchStreak = 0;
+
 
             if (gc.missStreak > 0) {
                 if (gc.missStreak % 2 == 0) {
+                    int newNumberOfButtons = gc.numberOfButtons - 2;
+                    for (int i = gc.numberOfButtons - 1; i > newNumberOfButtons - 1; i--) {
+                        AnimationComponent.Animate(
+                            gc.ColorButtons[i],
+                            "isOn",
+                            false,
+                            null,
+                            "anim_idle"
+                        );
+                    }
                     gc.numberOfButtons = Mathf.Max(gc.numberOfButtons - 2, 3);
                 }
 
@@ -54,6 +69,11 @@ public class StreakSystem : BaseSystem {
                     gc.difficulty -= 1;
                 }
             }
+            gc.missStreak = 0;
+        } else if (c is LossComponent) {
+            GameController gc = (Controller() as GameController);
+            gc.missStreak++;
+            gc.matchStreak = 0;
         }
     }
 
