@@ -12,10 +12,10 @@ public class RoundSystem : BaseSystem {
 	}
 
 	public override void Update() {
-        int round = (Controller() as GameController).round;
-		if (round == 0) {
-            (Controller() as GameController).round++;
-			Reset(round);
+		GameController gc = (Controller() as GameController);
+		if (gc.initializeGame) {
+			Reset(gc.round);
+			gc.initializeGame = false;
 		}
 
 		if (GetExistingMatch() != null) {
@@ -91,7 +91,7 @@ public class RoundSystem : BaseSystem {
         GameController gc = GameController.Instance;
         Color currentColor = gc.Target.GetComponent<ColorableComponent>().color;
         Color randomColor = RandomColor();
-        Color bgColor = currentColor == Color.clear ? RandomColor() : currentColor;
+        Color bgColor = gc.initializeGame && currentColor == Color.clear ? RandomColor() : currentColor;
         gc.background.GetComponent<SpriteRenderer>().color = bgColor;
         gc.Target.GetComponent<ColorableComponent>().color = randomColor;
         gc.Player.GetComponent<ColorableComponent>().color = bgColor;

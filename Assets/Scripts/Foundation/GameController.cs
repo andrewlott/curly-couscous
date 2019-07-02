@@ -74,6 +74,7 @@ public class GameController : BaseController {
     public int firstAdLevel = 3;
     public int difficulty = 1;
     public int round = 0;
+	public bool initializeGame = true;
 
     public float timeScale = 1.0f;
     public float lastMatchTime;
@@ -115,6 +116,7 @@ public class GameController : BaseController {
         AddSystem(ads);
 
         Enable();
+		this.initializeGame = true;
         ExtraSetup();
     }
 
@@ -131,7 +133,7 @@ public class GameController : BaseController {
     }
 
     public void Restart() {
-        this.round = 0;
+        this.round = 1;
         this.Lives = this.initialLives;
         this.Score = 0;
         this.difficulty = 1;
@@ -146,7 +148,7 @@ public class GameController : BaseController {
 
     public void StartGame() {
         Enable();
-        AnimateCubes(true);
+        AnimateCubes(true, null);
     }
 
     public void NewGame() {
@@ -167,7 +169,7 @@ public class GameController : BaseController {
     }
 
     public void EndGame() {
-        AnimateCubes(false);
+        AnimateCubes(false, EndGameCallback);
     }
 
     public void Pause() {
@@ -180,7 +182,7 @@ public class GameController : BaseController {
     }
 
     public void OnBack() {
-        EndGame();
+        AnimateCubes(false, NewGameCallback);
         /*
         AnimationComponent.Animate(
             mainMenuCanvas.gameObject,
@@ -193,12 +195,12 @@ public class GameController : BaseController {
         //SceneManager.LoadScene("SplashScene", LoadSceneMode.Single);
     }
 
-    private void AnimateCubes(bool show) {
+    private void AnimateCubes(bool show, AnimationComponent.CallbackFunction callback) {
         string trigger = "isOn" ;
         string callbackState = show ? "anim_appear" : "anim_idle";
         AnimationComponent.CallbackFunction doOnceCallback = null;
         if (!show) {
-            doOnceCallback = EndGameCallback;
+            doOnceCallback = callback;
         }
 
         AnimationComponent.Animate(this.Player, trigger, show, null, callbackState);
@@ -208,8 +210,13 @@ public class GameController : BaseController {
         }
     }
 
-    public void EndGameCallback(GameObject g) {
-        mainMenuCanvas.gameObject.SetActive(true);
+	public void NewGameCallback(GameObject g) {
+		mainMenuCanvas.gameObject.SetActive(true);
+		gameplayCanvas.SetActive(false);
+	}
+
+	public void EndGameCallback(GameObject g) {
+        gameOverCanvas.gameObject.SetActive(true);
         gameplayCanvas.SetActive(false);
     }
 

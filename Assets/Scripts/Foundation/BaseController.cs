@@ -41,7 +41,8 @@ public class BaseController : MonoBehaviour {
 
 	public void Disable() {
 		StopSystems();
-		_enabled = false;
+        StopAllCoroutines();
+        _enabled = false;
 	}
 
 	public void TogglePause() {
