@@ -29,7 +29,11 @@ public static class Utils {
 		return (float)(rng.NextDouble() * max);
 	}
 
-	public static void DestroyEntity(GameObject g) {
+    public static Color RandomColor() {
+        return new Color(Utils.RandomFloat(1.0f), Utils.RandomFloat(1.0f), Utils.RandomFloat(1.0f));
+    }
+
+    public static void DestroyEntity(GameObject g) {
 		BaseComponent[] allComponents = g.GetComponents<BaseComponent>();
 		foreach(BaseComponent c in allComponents) {
 			Pool.Instance.RemoveComponent(c);

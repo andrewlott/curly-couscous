@@ -14,6 +14,8 @@ public class RoundSystem : BaseSystem {
 	public override void Update() {
 		GameController gc = (Controller() as GameController);
 		if (gc.initializeGame) {
+			GameObject.Destroy(RoundSystem.GetExistingMatch());
+			ClearCubes();
 			Reset(gc.round);
 			gc.initializeGame = false;
 		}
@@ -87,11 +89,22 @@ public class RoundSystem : BaseSystem {
         Reset((Controller() as GameController).round++);
 	}
 
+    private void ClearCubes() {
+		GameController gc = GameController.Instance;
+		Color currentColor = gc.Target.GetComponent<ColorableComponent>().color;
+		gc.Target.GetComponent<ColorableComponent>().color = Color.clear;
+		gc.Player.GetComponent<ColorableComponent>().color = Color.clear;
+		foreach (GameObject go in gc.ColorButtons) { 
+			ColorableComponent cac = go.GetComponent<ColorableComponent>();
+			cac.color = Color.clear;
+		}
+	}
 	private void Reset(int round) {
         GameController gc = GameController.Instance;
         Color currentColor = gc.Target.GetComponent<ColorableComponent>().color;
-        Color randomColor = RandomColor();
-        Color bgColor = gc.initializeGame && currentColor == Color.clear ? RandomColor() : currentColor;
+        Color randomColor = Utils.RandomColor();
+		Debug.Log(randomColor);
+        Color bgColor = currentColor == Color.clear ? gc.background.GetComponent<SpriteRenderer>().color : currentColor;
         gc.background.GetComponent<SpriteRenderer>().color = bgColor;
         gc.Target.GetComponent<ColorableComponent>().color = randomColor;
         gc.Player.GetComponent<ColorableComponent>().color = bgColor;
@@ -120,10 +133,6 @@ public class RoundSystem : BaseSystem {
             gc.gameObject.AddComponent<AdComponent>();
         }
         (Controller() as GameController).lastMatchTime = Time.time;
-    }
-
-    private Color RandomColor() {
-        return new Color(Utils.RandomFloat(1.0f), Utils.RandomFloat(1.0f), Utils.RandomFloat(1.0f));
     }
 
     private Color SimilarColor(Color c) {

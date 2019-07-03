@@ -74,7 +74,7 @@ public class GameController : BaseController {
     public int numberOfButtons;
     public int firstAdLevel = 3;
     public int difficulty = 1;
-    public int round = 0;
+    public int round = 1;
 	public bool initializeGame = true;
 
     public float timeScale = 1.0f;
@@ -118,12 +118,13 @@ public class GameController : BaseController {
 
         Enable();
 		this.initializeGame = true;
-        ExtraSetup();
+		ExtraSetup();
     }
 
     private void ExtraSetup() {
         this.mainMenuHighScoreText.text = string.Format("{0}", PlayerPrefs.GetInt("highScore"));
-        GameObject debug = GameObject.Find("Debug");
+		background.GetComponent<SpriteRenderer>().color = Utils.RandomColor();
+		GameObject debug = GameObject.Find("Debug");
         if (debug != null) {
 #if UNITY_EDITOR
             debug.SetActive(true);
@@ -138,8 +139,12 @@ public class GameController : BaseController {
         this.Lives = this.initialLives;
         this.Score = 0;
         this.difficulty = 1;
+		this.matchStreak = 0;
+		this.missStreak = 0;
+		this.totalTime = this.initialTotalTime;
 		this.numberOfButtons = this.initialNumberOfButtons;
-        Disable();
+		this.initializeGame = true;
+		Disable();
     }
 
     public override void OnUpdate() {
