@@ -42,9 +42,11 @@ public class UISystem : BaseSystem {
                     PlayerPrefs.SetInt("highScore", score);
                     highScore = score;
                 }
-
-                gc.HandleCoroutine(LerpToScore());
-                gc.gameOverScoreText.text = string.Format("{0}", gc.Score);
+				if (gc.Score == 0) {
+					this._internalScore = 0;
+				}
+			    gc.HandleCoroutine(LerpToScore());
+				gc.gameOverScoreText.text = string.Format("{0}", gc.Score);
                 gc.pauseScoreText.text = string.Format("{0}", gc.Score);
                 gc.gameOverHighScoreText.text = string.Format("{0}", highScore);
                 gc.pauseHighScoreText.text = string.Format("{0}", highScore);
