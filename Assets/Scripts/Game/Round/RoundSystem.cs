@@ -103,7 +103,6 @@ public class RoundSystem : BaseSystem {
         GameController gc = GameController.Instance;
         Color currentColor = gc.Target.GetComponent<ColorableComponent>().color;
         Color randomColor = Utils.RandomColor();
-		Debug.Log(randomColor);
         Color bgColor = currentColor == Color.clear ? gc.background.GetComponent<SpriteRenderer>().color : currentColor;
         gc.background.GetComponent<SpriteRenderer>().color = bgColor;
         gc.Target.GetComponent<ColorableComponent>().color = randomColor;

@@ -176,7 +176,7 @@ public class GameController : BaseController {
     }
 
     public void EndGame() {
-        AnimateCubes(false, EndGameCallback);
+		AnimateCubes(false, EndGameCallback);
     }
 
     public void Pause() {
@@ -189,6 +189,7 @@ public class GameController : BaseController {
     }
 
     public void OnBack() {
+        GameObject.Destroy(Pool.Instance.ComponentForType(typeof(AdComponent)));
         AnimateCubes(false, NewGameCallback);
         /*
         AnimationComponent.Animate(

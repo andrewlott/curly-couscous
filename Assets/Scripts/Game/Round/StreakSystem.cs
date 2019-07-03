@@ -31,7 +31,7 @@ public class StreakSystem : BaseSystem {
                 }
 
                 if (gc.matchStreak % 2 == 0) {
-                    int newNumberOfButtons = gc.numberOfButtons + 2;
+                    int newNumberOfButtons = Mathf.Min(gc.numberOfButtons + 2, gc.ColorButtons.Count);
                     for (int i = gc.numberOfButtons; i < newNumberOfButtons; i++) {
                         AnimationComponent.Animate(
                             gc.ColorButtons[i],
@@ -41,7 +41,7 @@ public class StreakSystem : BaseSystem {
                             "anim_appear"
                         );
                     }
-                    gc.numberOfButtons = Mathf.Min(newNumberOfButtons, gc.ColorButtons.Count);
+                    gc.numberOfButtons = newNumberOfButtons;
                 }
 
                 if (gc.matchStreak > 1) {
@@ -52,7 +52,7 @@ public class StreakSystem : BaseSystem {
 
             if (gc.missStreak > 0) {
                 if (gc.missStreak % 2 == 0) {
-                    int newNumberOfButtons = gc.numberOfButtons - 2;
+                    int newNumberOfButtons = Mathf.Max(gc.numberOfButtons - 2, 3);
                     for (int i = gc.numberOfButtons - 1; i > newNumberOfButtons - 1; i--) {
                         AnimationComponent.Animate(
                             gc.ColorButtons[i],
@@ -62,11 +62,11 @@ public class StreakSystem : BaseSystem {
                             "anim_idle"
                         );
                     }
-                    gc.numberOfButtons = Mathf.Max(gc.numberOfButtons - 2, 3);
+                    gc.numberOfButtons = newNumberOfButtons;
                 }
 
                 if (gc.missStreak % 2 == 0) {
-                    gc.difficulty -= 1;
+                    gc.difficulty = Mathf.Max(gc.difficulty - 1, 1);
                 }
             }
             gc.missStreak = 0;
