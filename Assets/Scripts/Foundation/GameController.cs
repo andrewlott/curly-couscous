@@ -70,7 +70,8 @@ public class GameController : BaseController {
     public float initialTotalTime = 61.0f;
     public float totalTime;
     public float bonusTime = 10.0f;
-    public int numberOfButtons = 3;
+	public int initialNumberOfButtons = 3;
+    public int numberOfButtons;
     public int firstAdLevel = 3;
     public int difficulty = 1;
     public int round = 0;
@@ -137,6 +138,7 @@ public class GameController : BaseController {
         this.Lives = this.initialLives;
         this.Score = 0;
         this.difficulty = 1;
+		this.numberOfButtons = this.initialNumberOfButtons;
         Disable();
     }
 
