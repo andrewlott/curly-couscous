@@ -25,7 +25,8 @@ public class LivesSystem : BaseSystem {
                 }
             }
             GameObject.Destroy(c);
-        }
+		    gc.PlayParticleForDifficulty();
+		}
     }
 
 	public override void OnComponentRemoved(BaseComponent c) {

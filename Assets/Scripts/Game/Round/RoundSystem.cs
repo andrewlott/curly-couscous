@@ -14,13 +14,13 @@ public class RoundSystem : BaseSystem {
 	public override void Update() {
 		GameController gc = (Controller() as GameController);
 		if (gc.initializeGame) {
-			GameObject.Destroy(RoundSystem.GetExistingMatch());
+            gc.initializeGame = false;
+            GameObject.Destroy(RoundSystem.GetExistingMatch());
 			ClearCubes();
 			Reset(gc.round);
-			gc.initializeGame = false;
-		}
+        }
 
-		if (GetExistingMatch() != null) {
+        if (GetExistingMatch() != null) {
 			return;
 		}
 
@@ -131,7 +131,9 @@ public class RoundSystem : BaseSystem {
         if (gc.firstAdLevel == round) {
             gc.gameObject.AddComponent<AdComponent>();
         }
-        (Controller() as GameController).lastMatchTime = Time.time;
+        gc.lastMatchTime = Time.time;
+        Debug.Log(string.Format("Difficulty {0}", gc.difficulty));
+        gc.PlayParticleForDifficulty();
     }
 
     private Color SimilarColor(Color c) {

@@ -76,7 +76,7 @@ public class GameController : BaseController {
     public int firstAdLevel = 3;
     public int difficulty = 1;
     public int round = 1;
-	public bool initializeGame = true;
+	public bool initializeGame = false;
 
     public float timeScale = 1.0f;
     public float lastMatchTime;
@@ -133,8 +133,8 @@ public class GameController : BaseController {
 			debug.SetActive(false);
 #endif
         }
-        Animator a = mainMenuCanvas.gameObject.GetComponent<Animator>();
         ShowCanvas(mainMenuCanvas);
+        PlayParticleSystem("bgParticlesMenus", true);
     }
 
     public void Restart() {
@@ -168,6 +168,7 @@ public class GameController : BaseController {
         HideCanvas(mainMenuCanvas);
         HideCanvas(gameOverCanvas);
         ShowCanvas(gameplayCanvas);
+        PlayParticleForDifficulty();
         /*
         AnimationComponent.Animate(
             mainMenuCanvas.gameObject,
@@ -234,6 +235,7 @@ public class GameController : BaseController {
 
 	public void NewGameCallback(GameObject g) {
         ShowCanvas(mainMenuCanvas);
+        PlayParticleSystem("bgParticlesMenus", true);
         HideCanvas(gameplayCanvas);
     }
 
@@ -272,6 +274,51 @@ public class GameController : BaseController {
                 this._target = GameObject.FindGameObjectWithTag("Target Cube");
             }
             return this._target;
+        }
+    }
+
+    public void PlayParticleForDifficulty() {
+        if (!gameplayCanvas.activeInHierarchy) {
+            return;
+        }
+        if (Lives == 1) {
+            PlayParticleSystem("bgParticlesOneLifeLeft", true);
+        } else if (difficulty == 1) {
+            PlayParticleSystem("bgParticlesEasy", true);
+        } else if (difficulty == 3) {
+            PlayParticleSystem("bgParticlesMedium", true);
+        } else if (difficulty == 5) {
+            PlayParticleSystem("bgParticlesHard", true);
+        } else if (difficulty == 7) {
+            PlayParticleSystem("bgParticlesIntense", true);
+        }
+    }
+
+    public void PlayParticleSystem(string name, bool disableOthers) {
+        List<string> allNames = new List<string> {
+            "bgParticlesMenus",
+            "bgParticlesEasy",
+            "bgParticlesMedium",
+            "bgParticlesHard",
+            "bgParticlesIntense",
+            "bgParticlesOneLifeLeft"
+        };
+        Debug.Log(string.Format("Playing {0}", name));
+        ParticleSystem p = GameObject.Find(name).GetComponent<ParticleSystem>();
+        if (!p.isPlaying) {
+            p.Play();
+        }
+
+        if (disableOthers) {
+            foreach (string s in allNames) {
+                if (s == name) {
+                    continue;
+                }
+                ParticleSystem pp = GameObject.Find(s).GetComponent<ParticleSystem>();
+                if (pp.isPlaying) {
+                    pp.Stop();
+                }
+            }
         }
     }
 }
