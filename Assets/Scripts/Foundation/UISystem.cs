@@ -10,7 +10,7 @@ public class UISystem : BaseSystem {
         Pool.Instance.AddSystemListener(typeof(LossComponent), this);
 
         GameController gc = GameController.Instance;
-        gc.livesText.gameObject.SetActive(gc.livesMode);
+        //gc.livesText.gameObject.SetActive(gc.livesMode);
         gc.timerText.gameObject.SetActive(gc.timeMode);
     }
 
@@ -54,7 +54,7 @@ public class UISystem : BaseSystem {
             }
 
             if (gc.livesMode && gc.livesDirty) {
-                gc.livesText.text = string.Format("Lives: {0}", Mathf.Max(gc.Lives, 0));
+                //gc.livesText.text = string.Format("Lives: {0}", Mathf.Max(gc.Lives, 0));
             }
             gc.scoreDirty = false;
             gc.livesDirty = false;

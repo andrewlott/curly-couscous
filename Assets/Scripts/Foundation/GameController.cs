@@ -32,7 +32,7 @@ public class GameController : BaseController {
     // Gameplay Canvas
     public Text gameplayScoreText;
     public Text timerText;
-    public Text livesText;
+    //public Text livesText;
     public Text streakText;
 
     // Main menu
@@ -132,6 +132,8 @@ public class GameController : BaseController {
 			debug.SetActive(false);
 #endif
         }
+        Animator a = mainMenuCanvas.gameObject.GetComponent<Animator>();
+        ShowCanvas(mainMenuCanvas);
     }
 
     public void Restart() {
@@ -161,9 +163,10 @@ public class GameController : BaseController {
     public void NewGame() {
         Restart();
         StartGame();
-        mainMenuCanvas.gameObject.SetActive(false);
-        gameOverCanvas.gameObject.SetActive(false);
-        gameplayCanvas.SetActive(true);
+
+        HideCanvas(mainMenuCanvas);
+        HideCanvas(gameOverCanvas);
+        ShowCanvas(gameplayCanvas);
         /*
         AnimationComponent.Animate(
             mainMenuCanvas.gameObject,
@@ -185,6 +188,16 @@ public class GameController : BaseController {
             GameObject.Destroy(pc);
         } else {
             gameObject.AddComponent<PauseComponent>();
+        }
+    }
+
+    public void ShowCanvas(GameObject g) {
+        g.SetActive(true);
+    }
+
+    public void HideCanvas(GameObject g) {
+        if (g.activeInHierarchy) {
+            g.GetComponent<Animator>().SetBool("screenOn", false);
         }
     }
 
@@ -219,13 +232,13 @@ public class GameController : BaseController {
     }
 
 	public void NewGameCallback(GameObject g) {
-		mainMenuCanvas.gameObject.SetActive(true);
-		gameplayCanvas.SetActive(false);
-	}
+        ShowCanvas(mainMenuCanvas);
+        HideCanvas(gameplayCanvas);
+    }
 
-	public void EndGameCallback(GameObject g) {
-        gameOverCanvas.gameObject.SetActive(true);
-        gameplayCanvas.SetActive(false);
+    public void EndGameCallback(GameObject g) {
+        ShowCanvas(gameOverCanvas);
+        HideCanvas(gameplayCanvas);
     }
 
     // Properties

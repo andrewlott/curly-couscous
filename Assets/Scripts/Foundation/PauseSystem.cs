@@ -26,10 +26,10 @@ public class PauseSystem : BaseSystem {
 				animator.enabled = false;
 			}
 
-            gc.gameplayCanvas.SetActive(false);
-            gc.pauseCanvas.SetActive(true);
+            gc.HideCanvas(gc.gameplayCanvas);
+            gc.ShowCanvas(gc.pauseCanvas);
         }
-	}
+    }
 
 	public override void OnComponentRemoved(BaseComponent c) {
 		if (c is PauseComponent) {
@@ -41,8 +41,8 @@ public class PauseSystem : BaseSystem {
 				animator.enabled = true;
 			}
 
-            gc.gameplayCanvas.SetActive(true);
-            gc.pauseCanvas.SetActive(false);
-		}
-	}
+            gc.HideCanvas(gc.pauseCanvas);
+            gc.ShowCanvas(gc.gameplayCanvas);
+        }
+    }
 }

@@ -37,8 +37,8 @@ public class LivesSystem : BaseSystem {
     private IEnumerator GameOver() {
         yield return new WaitForSeconds(1.25f); // TODO: If this is zero, the animations get stuck and new game is borked. Why?
         GameController gc = (Controller() as GameController);
-        gc.gameplayCanvas.SetActive(false);
-        gc.gameOverCanvas.SetActive(true);
+        gc.HideCanvas(gc.gameplayCanvas);
+        gc.ShowCanvas(gc.gameOverCanvas);
         gc.EndGame();
     }
 }
