@@ -32,6 +32,7 @@ public class GameController : BaseController {
     // Gameplay Canvas
     public Text gameplayScoreText;
     public Text timerText;
+    public GameObject livesContainer;
     //public Text livesText;
     public Text streakText;
 
