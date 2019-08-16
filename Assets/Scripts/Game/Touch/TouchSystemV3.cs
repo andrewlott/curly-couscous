@@ -45,6 +45,7 @@ public class TouchSystem : BaseSystem {
         } else {
             BaseObject.AddComponent<LossComponent>();
         }
+        gc.Player.GetComponent<ColorableComponent>().SetColor();
 		TriggerAnimation(gc.Player, trigger);
 		TriggerAnimation(gc.Target, trigger);
         foreach (GameObject cube in gc.ColorButtons) {
