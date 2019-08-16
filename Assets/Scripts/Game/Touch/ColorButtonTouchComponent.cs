@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class ColorButtonTouchComponent : TouchComponent {
+    public bool isTouchable = false;
+
 	public override void ComponentStart() {
 		BoxCollider boxCollider = gameObject.GetComponent<BoxCollider>();
 		if (boxCollider == null) {
@@ -24,8 +26,9 @@ public class ColorButtonTouchComponent : TouchComponent {
 	public void OnMouseUpAsButton() { 
 		// Toggle Selected State
         // HAX
-        if (GameController.Instance.IsEnabled) {
+        if (GameController.Instance.IsEnabled && isTouchable) {
             this.gameObject.AddComponent<TouchComponent>();
+			this.isTouchable = false;
         }
     }
 }

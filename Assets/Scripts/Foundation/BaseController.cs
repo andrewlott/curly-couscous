@@ -84,4 +84,13 @@ public class BaseController : MonoBehaviour {
 	public Coroutine HandleCoroutine(IEnumerator routine) {
 		return StartCoroutine(routine);
 	}
+
+    public IEnumerator WaitAndDo(float time, System.Action action) {
+        yield return new WaitForSeconds(time);
+        action();
+    }
+
+    public void HandleWaitAndDo(float time, System.Action action) {
+        HandleCoroutine(WaitAndDo(time, action));
+    }
 }

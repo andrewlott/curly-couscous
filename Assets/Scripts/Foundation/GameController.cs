@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 public class GameController : BaseController {
     private static GameController _instance;
 
+    public Camera mainCamera;
     // Modes
     public bool livesMode;
     // TODO: Add time system
@@ -63,6 +64,9 @@ public class GameController : BaseController {
             livesDirty = true;
         }
     }
+    public Color previousColor;
+    public Color currentColor;
+
     public bool livesDirty = true;
     public int matchStreakForStock = 10;
     public int matchStreak;
@@ -77,6 +81,7 @@ public class GameController : BaseController {
     public int difficulty = 1;
     public int round = 1;
 	public bool initializeGame = false;
+    public bool isPlaying = false;
 
     public float timeScale = 1.0f;
     public float lastMatchTime;
@@ -92,8 +97,6 @@ public class GameController : BaseController {
 
     void Start() {
         // Add systems here
-        RoundSystem rs = new RoundSystem();
-        AddSystem(rs);
         LivesSystem ls = new LivesSystem();
         AddSystem(ls);
         StreakSystem ss = new StreakSystem();
@@ -104,8 +107,12 @@ public class GameController : BaseController {
         AddSystem(cs);
         TouchSystem ts = new TouchSystem();
         AddSystem(ts);
+		GameSystem gs = new GameSystem();
+		AddSystem(gs);
+		TutorialSystem tus = new TutorialSystem();
+		AddSystem(tus);
 
-        AnimationSystem ans = new AnimationSystem();
+		AnimationSystem ans = new AnimationSystem();
         AddSystem(ans);
         UISystem uis = new UISystem();
         AddSystem(uis);
@@ -122,9 +129,15 @@ public class GameController : BaseController {
 		ExtraSetup();
     }
 
+    private void ScaleCamera() {
+        float sceneWidth = 6.0f;
+        float unitsPerPixel = sceneWidth / Screen.width;
+        float desiredHalfHeight = 0.5f * unitsPerPixel * Screen.height;
+        mainCamera.orthographicSize = desiredHalfHeight;
+    }
+
     private void ExtraSetup() {
-        this.mainMenuHighScoreText.text = string.Format("{0}", PlayerPrefs.GetInt("highScore"));
-		background.GetComponent<SpriteRenderer>().color = Utils.RandomColor();
+        ScaleCamera();
 		GameObject debug = GameObject.Find("Debug");
         if (debug != null) {
 #if UNITY_EDITOR
@@ -133,8 +146,29 @@ public class GameController : BaseController {
 			debug.SetActive(false);
 #endif
         }
+
+        ShowMainMenu();
+        this.mainMenuHighScoreText.text = string.Format("{0}", PlayerPrefs.GetInt("highScore"));
+        previousColor = Utils.RandomColor();
+        background.GetComponent<SpriteRenderer>().color = previousColor;
+    }
+
+    private void ShowMainMenu() {
+        HideCanvas(gameplayCanvas);
         ShowCanvas(mainMenuCanvas);
         PlayParticleSystem("bgParticlesMenus", true);
+    }
+
+    private void ShowGame() {
+        HideCanvas(mainMenuCanvas);
+        HideCanvas(gameOverCanvas);
+        ShowCanvas(gameplayCanvas);
+    }
+
+    public void ShowGameOver() {
+        HideCanvas(gameplayCanvas);
+        ShowCanvas(gameOverCanvas);
+        GameSystem.isPlaying = false;
     }
 
     public void Restart() {
@@ -147,7 +181,6 @@ public class GameController : BaseController {
 		this.totalTime = this.initialTotalTime;
 		this.numberOfButtons = this.initialNumberOfButtons;
 		this.initializeGame = true;
-		Disable();
     }
 
     public override void OnUpdate() {
@@ -156,32 +189,24 @@ public class GameController : BaseController {
         }
     }
 
-    public void StartGame() {
-        Enable();
-        AnimateCubes(true, null);
+    public void OnBack() {
+        GameObject.Destroy(Pool.Instance.ComponentForType(typeof(AdComponent)));
+
+        this.gameObject.AddComponent<EndGameComponent>();
+        this.gameObject.AddComponent<EndTutorialComponent>();
+        ShowMainMenu();
     }
 
     public void NewGame() {
         Restart();
-        StartGame();
-
-        HideCanvas(mainMenuCanvas);
-        HideCanvas(gameOverCanvas);
-        ShowCanvas(gameplayCanvas);
-        PlayParticleForDifficulty();
-        /*
-        AnimationComponent.Animate(
-            mainMenuCanvas.gameObject,
-            "main menu_off",
-            false,
-            null,
-           "anim_mainmenu_off"
-        );
-        */
+        ShowGame();
+        this.gameObject.AddComponent<StartGameComponent>();
     }
 
-    public void EndGame() {
-		AnimateCubes(false, EndGameCallback);
+    public void NewTutorial() {
+        Restart();
+        ShowGame();
+        this.gameObject.AddComponent<StartTutorialComponent>();
     }
 
     public void Pause() {
@@ -194,54 +219,16 @@ public class GameController : BaseController {
     }
 
     public void ShowCanvas(GameObject g) {
-        g.SetActive(true);
+        if (!g.activeInHierarchy) {
+            g.SetActive(true);
+        }
+        g.GetComponent<Animator>().SetBool("screenOn", true);
     }
 
     public void HideCanvas(GameObject g) {
         if (g.activeInHierarchy) {
             g.GetComponent<Animator>().SetBool("screenOn", false);
         }
-    }
-
-    public void OnBack() {
-        GameObject.Destroy(Pool.Instance.ComponentForType(typeof(AdComponent)));
-        AnimateCubes(false, NewGameCallback);
-        /*
-        AnimationComponent.Animate(
-            mainMenuCanvas.gameObject,
-            "main menu on",
-            false,
-            null,
-            "anim_mainmenu_on"
-        );
-        */
-        //SceneManager.LoadScene("SplashScene", LoadSceneMode.Single);
-    }
-
-    private void AnimateCubes(bool show, AnimationComponent.CallbackFunction callback) {
-        string trigger = "isOn" ;
-        string callbackState = show ? "anim_appear" : "anim_idle";
-        AnimationComponent.CallbackFunction doOnceCallback = null;
-        if (!show) {
-            doOnceCallback = callback;
-        }
-
-        AnimationComponent.Animate(this.Player, trigger, show, null, callbackState);
-        AnimationComponent.Animate(this.Target, trigger, show, doOnceCallback, callbackState);
-        for (int i = 0; i < this.numberOfButtons; i++) {
-            AnimationComponent.Animate(this.ColorButtons[i], trigger, show, null, callbackState);
-        }
-    }
-
-	public void NewGameCallback(GameObject g) {
-        ShowCanvas(mainMenuCanvas);
-        PlayParticleSystem("bgParticlesMenus", true);
-        HideCanvas(gameplayCanvas);
-    }
-
-    public void EndGameCallback(GameObject g) {
-        ShowCanvas(gameOverCanvas);
-        HideCanvas(gameplayCanvas);
     }
 
     // Properties
@@ -303,7 +290,6 @@ public class GameController : BaseController {
             "bgParticlesIntense",
             "bgParticlesOneLifeLeft"
         };
-        Debug.Log(string.Format("Playing {0}", name));
         ParticleSystem p = GameObject.Find(name).GetComponent<ParticleSystem>();
         if (!p.isPlaying) {
             p.Play();

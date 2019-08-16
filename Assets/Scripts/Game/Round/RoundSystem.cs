@@ -11,8 +11,25 @@ public class RoundSystem : BaseSystem {
 		Pool.Instance.RemoveSystemListener(typeof(MatchComponent), this);
 	}
 
+    /*
+     * - Start, set last color and therefore set background
+     * - game should exist but all game objects should be inactive
+     * - on start, we initialize the game w/ prev color and next color, show game objects
+     * - play
+     * - on end game, we hide all the things and then turn off the game objects
+     * - on restart, we start game again w/ prev color and next color, show game objects
+     * - on end total, we hide all the things and then turn off the game objects
+     *
+     * - tutorial
+     * - inherit from roundsystem with tutorialroundsystem, overriding some things
+     * - use queue of colors, or hardcode them per level in color chooser function
+     */
+
 	public override void Update() {
 		GameController gc = (Controller() as GameController);
+        if (!gc.isPlaying) {
+            return;
+        }
 		if (gc.initializeGame) {
             gc.initializeGame = false;
             GameObject.Destroy(RoundSystem.GetExistingMatch());
@@ -99,6 +116,7 @@ public class RoundSystem : BaseSystem {
 			cac.color = Color.clear;
 		}
 	}
+
 	private void Reset(int round) {
         GameController gc = GameController.Instance;
         Color currentColor = gc.Target.GetComponent<ColorableComponent>().color;

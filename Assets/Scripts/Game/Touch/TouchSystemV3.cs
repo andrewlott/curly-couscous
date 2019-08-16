@@ -4,9 +4,6 @@ using UnityEngine;
 
 
 public class TouchSystem : BaseSystem {
-	// TODO: Do this smarter
-	static bool IsAnimating = false;
-
 	public override void Start() {
 		Pool.Instance.AddSystemListener(typeof(TouchComponent), this);
 	}
@@ -21,13 +18,11 @@ public class TouchSystem : BaseSystem {
 
 	public override void OnComponentAdded(BaseComponent c) {
 		if (c is TouchComponent) {
-			if (!IsAnimating) {
-				GameController gameController = GameController.Instance;
-				ColorableComponent cac = c.gameObject.GetComponent<ColorableComponent>();
-				if (cac.color != Color.clear) {
-					gameController.Player.GetComponent<ColorableComponent>().color = cac.color;
-					OnTouch();
-				}
+			GameController gameController = GameController.Instance;
+			ColorableComponent cac = c.gameObject.GetComponent<ColorableComponent>();
+			if (cac.color != Color.clear) {
+				gameController.Player.GetComponent<ColorableComponent>().color = cac.color;
+				OnTouch();
 			}
 			GameObject.Destroy(c);
 		}
@@ -40,34 +35,35 @@ public class TouchSystem : BaseSystem {
 	}
 
 	private void OnTouch() {
-		IsAnimating = true;
+        if (!GameSystem.isPlaying && !TutorialSystem.isTutorialPlaying) {
+            return;
+        }
 		GameController gc = GameController.Instance;
-
-		string trigger = "isIncorrect";
-		AnimationComponent.CallbackFunction doOnceCallback = DefaultClearAnimationCallback;
-		string callbackState = "anim_incorrect";
-
-		if (RoundSystem.HasMatch()) {
-			trigger = "isCorrect";
-			doOnceCallback = ClearCorrectAnimationCallback;
-			callbackState = "anim_correct";
+        string trigger = "isIncorrect";
+        if (GameSystem.HasMatch()) {
+            trigger = "isCorrect";
         } else {
             BaseObject.AddComponent<LossComponent>();
         }
+		TriggerAnimation(gc.Player, trigger);
+		TriggerAnimation(gc.Target, trigger);
+        foreach (GameObject cube in gc.ColorButtons) {
+			TriggerAnimation(cube, trigger);
+        }
+        // Cubes will all unset the bool via animation behaviour
 
-        AnimationComponent.Animate(gc.Player, trigger, false, null, callbackState);
-		AnimationComponent.Animate(gc.Target, trigger, false, doOnceCallback, callbackState);
-		foreach (GameObject cube in gc.ColorButtons) {
-			AnimationComponent.Animate(cube, trigger, false, null, callbackState);
-		}
-	}
 
-	public void DefaultClearAnimationCallback(GameObject g) {
-		IsAnimating = false;
-	}
+        if (GameSystem.isPlaying) {
+            GameObject.Destroy(GameSystem.GetExistingMatch());
+        }
+        if (TutorialSystem.isTutorialPlaying) {
+            GameObject.Destroy(TutorialSystem.GetExistingMatch());
+        }
+    }
 
-	public void ClearCorrectAnimationCallback(GameObject g) {
-		IsAnimating = false;
-		GameObject.Destroy(RoundSystem.GetExistingMatch());
+    private void TriggerAnimation(GameObject g, string trigger) {
+		Controller().HandleWaitAndDo(Utils.RandomFloat(0.0f), () => {
+			g.GetComponent<Animator>().SetBool(trigger, true);
+		});
 	}
 }
