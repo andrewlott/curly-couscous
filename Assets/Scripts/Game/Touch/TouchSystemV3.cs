@@ -38,33 +38,14 @@ public class TouchSystem : BaseSystem {
         if (!GameSystem.isPlaying && !TutorialSystem.isTutorialPlaying) {
             return;
         }
+
 		GameController gc = GameController.Instance;
-        string trigger = "isIncorrect";
-        if (GameSystem.HasMatch()) {
-            trigger = "isCorrect";
-        } else {
+        gc.Player.GetComponent<ColorableComponent>().SetColor();
+        if (!GameSystem.HasMatch()) {
             BaseObject.AddComponent<LossComponent>();
         }
-        gc.Player.GetComponent<ColorableComponent>().SetColor();
-		TriggerAnimation(gc.Player, trigger);
-		TriggerAnimation(gc.Target, trigger);
-        foreach (GameObject cube in gc.ColorButtons) {
-			TriggerAnimation(cube, trigger);
-        }
-        // Cubes will all unset the bool via animation behaviour
 
-
-        if (GameSystem.isPlaying) {
-            GameObject.Destroy(GameSystem.GetExistingMatch());
-        }
-        if (TutorialSystem.isTutorialPlaying) {
-            GameObject.Destroy(TutorialSystem.GetExistingMatch());
-        }
+        GameObject.Destroy(GameSystem.GetExistingMatch());
+        GameObject.Destroy(TutorialSystem.GetExistingMatch());
     }
-
-    private void TriggerAnimation(GameObject g, string trigger) {
-		Controller().HandleWaitAndDo(Utils.RandomFloat(0.0f), () => {
-			g.GetComponent<Animator>().SetBool(trigger, true);
-		});
-	}
 }

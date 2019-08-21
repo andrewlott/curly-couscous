@@ -9,16 +9,22 @@ public class GameSystem : BaseSystem {
 		Pool.Instance.AddSystemListener(typeof(StartGameComponent), this);
         Pool.Instance.AddSystemListener(typeof(EndGameComponent), this);
         Pool.Instance.AddSystemListener(typeof(MatchComponent), this);
+        Pool.Instance.AddSystemListener(typeof(LossComponent), this);
     }
 
     public override void Stop() {
         Pool.Instance.RemoveSystemListener(typeof(StartGameComponent), this);
         Pool.Instance.RemoveSystemListener(typeof(EndGameComponent), this);
         Pool.Instance.RemoveSystemListener(typeof(MatchComponent), this);
+        Pool.Instance.RemoveSystemListener(typeof(LossComponent), this);
     }
 
     protected virtual bool IsPlaying() {
         return isPlaying;
+    }
+
+    protected virtual void SetIsPlaying(bool b) {
+        isPlaying = b;
     }
 
     public override void Update() {
@@ -64,7 +70,7 @@ public class GameSystem : BaseSystem {
                 ShowGame();
             }
             SetupNextRound();
-            isPlaying = true;
+            SetIsPlaying(true);
 
             GameObject.Destroy(c);
         } else if (c is EndGameComponent) {
@@ -75,11 +81,13 @@ public class GameSystem : BaseSystem {
                 HideGame();
             }
             GameObject.Destroy(RoundSystem.GetExistingMatch());
-            isPlaying = false;
+            SetIsPlaying(false);
 
             GameObject.Destroy(c);
         } else if (c is MatchComponent) {
             this.OnMatch(c.gameObject);
+        } else if (c is LossComponent) {
+            this.OnLoss(c.gameObject);
         }
     }
 
@@ -104,8 +112,6 @@ public class GameSystem : BaseSystem {
             g.GetComponent<Animator>().SetBool("isOn", true);
         });
     }
-
-
 
     protected void HideGame() {
         GameController gc = GameController.Instance;
@@ -150,11 +156,40 @@ public class GameSystem : BaseSystem {
         return Pool.Instance.ComponentForType(typeof(MatchComponent)) as MatchComponent;
     }
 
+    protected void OnLoss(GameObject g) {
+        if (IsPlaying()) {
+            AnimateMatchOrLoss(false);
+        }
+    }
+
     protected void OnMatch(GameObject g) {
         if (IsPlaying()) {
-			SetupNextRound();
-		}
+            AnimateMatchOrLoss(true);
+            SetupNextRound();
+        }
 	}
+
+    private void AnimateMatchOrLoss(bool matched) {
+        GameController gc = GameController.Instance;
+        string trigger = "isIncorrect";
+
+        if (matched) {
+            trigger = "isCorrect";
+        }
+        Utils.TriggerAnimation(gc.Player, trigger);
+        Utils.TriggerAnimation(gc.Target, trigger);
+
+        int upperBound = Mathf.Min(gc.numberOfButtons, gc.ColorButtons.Count);
+        int index = 0;
+        foreach (GameObject cube in gc.ColorButtons) {
+            if (index < upperBound && cube.GetComponent<Animator>().GetBool("isOn")) {
+                Utils.TriggerAnimation(cube, trigger);
+            }
+            index++;
+        }
+        Debug.Log(string.Format("Upperbound: {0}", upperBound));
+        // Cubes will all unset the bool via animation behaviour
+    }
 
     protected void SetupNextRound() {
 		GameController gc = (Controller() as GameController);

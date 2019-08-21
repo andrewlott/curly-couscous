@@ -21,37 +21,9 @@ public class TutorialSystem : GameSystem {
         return isTutorialPlaying;
     }
 
-    public override void OnComponentAdded(BaseComponent c) {
-		if (c is StartTutorialComponent) {
-            StartTutorialComponent stc = c as StartTutorialComponent;
-            if (stc.go != null) {
-                ShowIfInactive(stc.go);
-            } else {
-                ShowGame();
-            }
-            SetupNextRound();
-            isTutorialPlaying = true;
-
-            GameObject.Destroy(c);
-        } else if (c is EndTutorialComponent) {
-            EndTutorialComponent etc = c as EndTutorialComponent;
-            if (etc.go != null) {
-                HideIfActive(etc.go);
-            } else {
-                HideGame();
-            }
-            GameObject.Destroy(RoundSystem.GetExistingMatch());
-            isTutorialPlaying = false;
-
-            GameObject.Destroy(c);
-        } else if (c is MatchComponent) {
-            this.OnMatch(c.gameObject);
-            GameController gc = (Controller() as GameController);
-        }
+    protected override void SetIsPlaying(bool b) {
+        isTutorialPlaying = b;
     }
-
-	public override void OnComponentRemoved(BaseComponent c) {
-	}
 
     protected override Color NextColor() {
         GameController gc = (Controller() as GameController);

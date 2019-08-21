@@ -42,4 +42,9 @@ public static class Utils {
 		GameObject.Destroy(g);
 	}
 
+    public static void TriggerAnimation(GameObject g, string trigger) {
+        GameController.Instance.HandleWaitAndDo(Utils.RandomFloat(0.0f), () => {
+            g.GetComponent<Animator>().SetBool(trigger, true);
+        });
+    }
 }
