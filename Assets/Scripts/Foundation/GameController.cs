@@ -130,7 +130,7 @@ public class GameController : BaseController {
     }
 
     private void ScaleCamera() {
-        float sceneWidth = 6.0f;
+        float sceneWidth = 5.5f;
         float unitsPerPixel = sceneWidth / Screen.width;
         float desiredHalfHeight = 0.5f * unitsPerPixel * Screen.height;
         mainCamera.orthographicSize = desiredHalfHeight;

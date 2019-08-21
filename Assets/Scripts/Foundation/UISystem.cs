@@ -8,6 +8,8 @@ public class UISystem : BaseSystem {
 	public override void Start() {
 		Pool.Instance.AddSystemListener(typeof(MatchComponent), this);
         Pool.Instance.AddSystemListener(typeof(LossComponent), this);
+        Pool.Instance.AddSystemListener(typeof(EndGameComponent), this);
+
 
         GameController gc = GameController.Instance;
         gc.livesContainer.gameObject.SetActive(gc.livesMode);
@@ -17,6 +19,7 @@ public class UISystem : BaseSystem {
     public override void Stop() {
 		Pool.Instance.RemoveSystemListener(typeof(MatchComponent), this);
         Pool.Instance.RemoveSystemListener(typeof(LossComponent), this);
+        Pool.Instance.RemoveSystemListener(typeof(EndGameComponent), this);
     }
 
     public override void Update() {
@@ -46,10 +49,10 @@ public class UISystem : BaseSystem {
 					this._internalScore = 0;
 				}
 			    gc.HandleCoroutine(LerpToScore());
-				gc.gameOverScoreText.text = string.Format("{0}", gc.Score);
+
                 gc.pauseScoreText.text = string.Format("{0}", gc.Score);
-                gc.gameOverHighScoreText.text = string.Format("{0}", highScore);
                 gc.pauseHighScoreText.text = string.Format("{0}", highScore);
+
                 gc.mainMenuHighScoreText.text = string.Format("{0}", highScore);
             }
 
@@ -75,6 +78,10 @@ public class UISystem : BaseSystem {
 
 		} else if (c is LossComponent) {
 
+        } else if (c is EndGameComponent) {
+            GameController gc = GameController.Instance;
+            gc.gameOverScoreText.text = string.Format("{0}", gc.Score);
+            gc.gameOverHighScoreText.text = string.Format("{0}", PlayerPrefs.GetInt("highScore"));
         }
     }
 
