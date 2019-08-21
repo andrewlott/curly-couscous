@@ -31,6 +31,10 @@ public class GameSystem : BaseSystem {
         isPlaying = b;
     }
 
+    protected virtual bool ShouldShowAd(int round) {
+        return GameController.Instance.firstAdLevel == round;
+    }
+
     public override void Update() {
         GameController gc = (Controller() as GameController);
         if (!IsPlaying()) {
@@ -67,26 +71,14 @@ public class GameSystem : BaseSystem {
 
 	public override void OnComponentAdded(BaseComponent c) {
 		if (c is StartGameComponent) {
-            StartGameComponent sgc = c as StartGameComponent;
-            if (sgc.go != null) {
-                ShowIfInactive(sgc.go);
-            } else {
-                ShowGame();
-            }
+            ShowGame();
             SetupNextRound();
             SetIsPlaying(true);
-
             GameObject.Destroy(c);
         } else if (c is EndGameComponent) {
-            EndGameComponent egc = c as EndGameComponent;
-            if (egc.go != null) {
-                HideIfActive(egc.go);
-            } else {
-                HideGame();
-            }
+            HideGame();
             GameObject.Destroy(RoundSystem.GetExistingMatch());
             SetIsPlaying(false);
-
             GameObject.Destroy(c);
         } else if (c is MatchComponent) {
             this.OnMatch(c.gameObject);
@@ -179,7 +171,7 @@ public class GameSystem : BaseSystem {
         Utils.TriggerAnimation(gc.Player, trigger, true, _animateCorrectTime);
         Utils.TriggerAnimation(gc.Target, trigger, true, _animateCorrectTime);
 
-        int upperBound = Mathf.Min(gc.numberOfButtons, gc.ColorButtons.Count);
+        int upperBound = NumberOfButtonsUpperbound();
         int index = 0;
         foreach (GameObject cube in gc.ColorButtons) {
             if (index < upperBound && cube.GetComponent<Animator>().GetBool("isOn")) {
@@ -208,19 +200,21 @@ public class GameSystem : BaseSystem {
 
         int index = 0;
         int lowerBound = 0;
-        int upperBound = Mathf.Min(gc.numberOfButtons, gc.ColorButtons.Count);
+        int upperBound = NumberOfButtonsUpperbound();
         int targetIndex = lowerBound + Utils.RandomInt(upperBound - lowerBound);
         Debug.Log(string.Format("Color is at location {0}", targetIndex));
         foreach (GameObject go in gc.ColorButtons) {
+            ColorableComponent cac = go.GetComponent<ColorableComponent>();
             Color buttonColor = Color.clear;
+            cac.color = buttonColor;
+
             if (index == targetIndex) {
                 buttonColor = gc.currentColor;
             } else if (index >= lowerBound && index < upperBound) {
-                buttonColor = SimilarColor(gc.currentColor);
+                buttonColor = SimilarColor(gc.currentColor, index);
             }
 
             if (buttonColor != Color.clear) {
-                ColorableComponent cac = go.GetComponent<ColorableComponent>();
                 cac.color = buttonColor;
                 ShowIfInactive(go);
             } else {
@@ -229,7 +223,7 @@ public class GameSystem : BaseSystem {
             index++;
         }
 
-        if (gc.firstAdLevel == round) {
+        if (ShouldShowAd(round)) {
             gc.gameObject.AddComponent<AdComponent>();
         }
         gc.lastMatchTime = Time.time;
@@ -237,11 +231,15 @@ public class GameSystem : BaseSystem {
         gc.PlayParticleForDifficulty();
     }
 
+    protected virtual int NumberOfButtonsUpperbound() {
+        return Mathf.Min(GameController.Instance.numberOfButtons, GameController.Instance.ColorButtons.Count);
+    }
+
     protected virtual Color NextColor() {
         return Utils.RandomColor();
     }
 
-    protected virtual Color SimilarColor(Color c) {
+    protected virtual Color SimilarColor(Color c, int index) {
         GameController gc = (Controller() as GameController);
         float offset = 1.0f / gc.difficulty; // Magic equation that feels nice
 
