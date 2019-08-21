@@ -5,7 +5,11 @@ using UnityEngine;
 public class GameSystem : BaseSystem {
     public static bool isPlaying = false;
 
-	public override void Start() {
+    private float _animateInTime = 0.5f;
+    private float _animateOutTime = 0.5f;
+    private float _animateCorrectTime = 0.5f;
+
+    public override void Start() {
 		Pool.Instance.AddSystemListener(typeof(StartGameComponent), this);
         Pool.Instance.AddSystemListener(typeof(EndGameComponent), this);
         Pool.Instance.AddSystemListener(typeof(MatchComponent), this);
@@ -108,9 +112,7 @@ public class GameSystem : BaseSystem {
         if (!g.activeInHierarchy) {
             g.SetActive(true);
         }
-        Controller().HandleWaitAndDo(Utils.RandomFloat(0.0f), () => {
-            g.GetComponent<Animator>().SetBool("isOn", true);
-        });
+        Utils.TriggerAnimation(g, "isOn", true, _animateInTime);
     }
 
     protected void HideGame() {
@@ -125,9 +127,7 @@ public class GameSystem : BaseSystem {
 
     protected void HideIfActive(GameObject g) {
         if (g.activeInHierarchy) {
-            Controller().HandleWaitAndDo(Utils.RandomFloat(0.0f), () => {
-                g.GetComponent<Animator>().SetBool("isOn", false);
-            });
+            Utils.TriggerAnimation(g, "isOn", false, _animateOutTime);
         }
     }
 
@@ -176,18 +176,17 @@ public class GameSystem : BaseSystem {
         if (matched) {
             trigger = "isCorrect";
         }
-        Utils.TriggerAnimation(gc.Player, trigger);
-        Utils.TriggerAnimation(gc.Target, trigger);
+        Utils.TriggerAnimation(gc.Player, trigger, true, _animateCorrectTime);
+        Utils.TriggerAnimation(gc.Target, trigger, true, _animateCorrectTime);
 
         int upperBound = Mathf.Min(gc.numberOfButtons, gc.ColorButtons.Count);
         int index = 0;
         foreach (GameObject cube in gc.ColorButtons) {
             if (index < upperBound && cube.GetComponent<Animator>().GetBool("isOn")) {
-                Utils.TriggerAnimation(cube, trigger);
+                Utils.TriggerAnimation(cube, trigger, true, _animateCorrectTime);
             }
             index++;
         }
-        Debug.Log(string.Format("Upperbound: {0}", upperBound));
         // Cubes will all unset the bool via animation behaviour
     }
 
