@@ -235,17 +235,49 @@ public class GameSystem : BaseSystem {
         return Mathf.Min(GameController.Instance.numberOfButtons, GameController.Instance.ColorButtons.Count);
     }
 
+    private float Similarity(Color a, Color b) {
+        float rDiff = Mathf.Abs(a.r - b.r);
+        float gDiff = Mathf.Abs(a.g - b.g);
+        float bDiff = Mathf.Abs(a.b - b.b);
+        return (rDiff + gDiff + bDiff) / 3.0f;
+    }
+
     protected virtual Color NextColor() {
-        return Utils.RandomColor();
+        Color prevColor = GameController.Instance.previousColor;
+        Color nextColor = Utils.RandomColor();
+        float minDiff = 0.15f;
+        float minBlackDiff = 0.5f;
+        float minWhiteDiff = 0.25f;
+        while (Similarity(nextColor, prevColor) < minDiff
+            || Similarity(nextColor, Color.black) < minBlackDiff
+            || Similarity(nextColor, Color.white) < minWhiteDiff) {
+            nextColor = Utils.RandomColor();
+        }
+        return nextColor;
     }
 
     protected virtual Color SimilarColor(Color c, int index) {
         GameController gc = (Controller() as GameController);
-        float offset = 1.0f / gc.difficulty; // Magic equation that feels nice
+        float offset = 0.5f / gc.difficulty; // Magic equation that feels nice
+        float minDiff = offset;
 
-        float r = Mathf.Max(Mathf.Min(c.r - (offset / 2.0f) + Utils.RandomFloat(offset), 1.0f), 0.0f);
-        float g = Mathf.Max(Mathf.Min(c.g - (offset / 2.0f) + Utils.RandomFloat(offset), 1.0f), 0.0f);
-        float b = Mathf.Max(Mathf.Min(c.b - (offset / 2.0f) + Utils.RandomFloat(offset), 1.0f), 0.0f);
-        return new Color(r, g, b);
+        float minBlackDiff = 0.5f;
+        float minWhiteDiff = 0.25f;
+
+        Color similarColor = Color.black;
+        while (
+            Similarity(similarColor, Color.black) < minBlackDiff
+            || Similarity(similarColor, Color.white) < minWhiteDiff) {
+            float rDiff = (Utils.RandomBool() ? 1 : -1) * (Utils.RandomFloat(offset) + minDiff);
+            float r = Mathf.Max(Mathf.Min(c.r + rDiff, 1.0f), 0.0f);
+            float gDiff = (Utils.RandomBool() ? 1 : -1) * (Utils.RandomFloat(offset) + minDiff);
+            float g = Mathf.Max(Mathf.Min(c.g + gDiff, 1.0f), 0.0f);
+            float bDiff = (Utils.RandomBool() ? 1 : -1) * (Utils.RandomFloat(offset) + minDiff);
+            float b = Mathf.Max(Mathf.Min(c.b + bDiff, 1.0f), 0.0f);
+
+            similarColor = new Color(r, g, b);
+        }
+
+        return similarColor;
     }
 }
