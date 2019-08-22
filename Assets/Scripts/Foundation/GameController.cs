@@ -80,6 +80,10 @@ public class GameController : BaseController {
     public int firstAdLevel = 3;
     public int difficulty = 1;
     public int round = 1;
+    public int easyDifficulty = 1;
+    public int mediumDifficulty = 5;
+    public int hardDifficulty = 10;
+    public int intenseDifficulty = 15;
 	public bool initializeGame = false;
     public bool isPlaying = false;
 
@@ -270,13 +274,13 @@ public class GameController : BaseController {
         }
         if (Lives == 1) {
             PlayParticleSystem("bgParticlesOneLifeLeft", true);
-        } else if (difficulty == 1) {
+        } else if (difficulty == easyDifficulty) {
             PlayParticleSystem("bgParticlesEasy", true);
-        } else if (difficulty == 3) {
+        } else if (difficulty == mediumDifficulty) {
             PlayParticleSystem("bgParticlesMedium", true);
-        } else if (difficulty == 5) {
+        } else if (difficulty == hardDifficulty) {
             PlayParticleSystem("bgParticlesHard", true);
-        } else if (difficulty == 7) {
+        } else if (difficulty == intenseDifficulty) {
             PlayParticleSystem("bgParticlesIntense", true);
         }
     }
