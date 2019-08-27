@@ -44,7 +44,6 @@ public static class Utils {
 
     public static void TriggerAnimation(GameObject g, string trigger, bool b, float maxDelay = 0.0f) {
         float r = Utils.RandomFloat(maxDelay);
-        Debug.Log(string.Format("Random float below {0}: {1}", maxDelay, r));
         GameController.Instance.HandleWaitAndDo(r, () => {
             g.GetComponent<Animator>().SetBool(trigger, b);
         });

@@ -205,8 +205,11 @@ public class GameSystem : BaseSystem {
         Debug.Log(string.Format("Color is at location {0}", targetIndex));
         foreach (GameObject go in gc.ColorButtons) {
             ColorableComponent cac = go.GetComponent<ColorableComponent>();
+            cac.color = Color.clear;
+        }
+        foreach (GameObject go in gc.ColorButtons) {
+            ColorableComponent cac = go.GetComponent<ColorableComponent>();
             Color buttonColor = Color.clear;
-            cac.color = buttonColor;
 
             if (index == targetIndex) {
                 buttonColor = gc.currentColor;
@@ -239,7 +242,7 @@ public class GameSystem : BaseSystem {
         float rDiff = Mathf.Abs(a.r - b.r);
         float gDiff = Mathf.Abs(a.g - b.g);
         float bDiff = Mathf.Abs(a.b - b.b);
-        return (rDiff + gDiff + bDiff) / 3.0f;
+        return Mathf.Sqrt(Mathf.Pow(rDiff, 2) + Mathf.Pow(gDiff, 2) + Mathf.Pow(bDiff, 2));
     }
 
     protected virtual Color NextColor() {
@@ -256,10 +259,25 @@ public class GameSystem : BaseSystem {
         return nextColor;
     }
 
+    protected virtual bool IsSimilarToExistingColor(Color c, float minDiff) {
+        GameController gc = (Controller() as GameController);
+        foreach (GameObject go in gc.ColorButtons) {
+            ColorableComponent cc = go.GetComponent<ColorableComponent>();
+            if (cc.color == Color.clear) {
+                continue;
+            }
+            if (Similarity(c, cc.color) < minDiff) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     protected virtual Color SimilarColor(Color c, int index) {
         GameController gc = (Controller() as GameController);
-        float offset = 0.5f / gc.difficulty; // Magic equation that feels nice
-        float minDiff = offset;
+        float offset = 0.5f / (gc.difficulty + 1); // Magic equation that feels nice
+        float minDiff = offset / 2;
 
         float minBlackDiff = 0.5f;
         float minWhiteDiff = 0.25f;
@@ -267,7 +285,8 @@ public class GameSystem : BaseSystem {
         Color similarColor = Color.black;
         while (
             Similarity(similarColor, Color.black) < minBlackDiff
-            || Similarity(similarColor, Color.white) < minWhiteDiff) {
+            || Similarity(similarColor, Color.white) < minWhiteDiff
+            || IsSimilarToExistingColor(similarColor, minDiff)) {
             float rDiff = (Utils.RandomBool() ? 1 : -1) * (Utils.RandomFloat(offset) + minDiff);
             float r = Mathf.Max(Mathf.Min(c.r + rDiff, 1.0f), 0.0f);
             float gDiff = (Utils.RandomBool() ? 1 : -1) * (Utils.RandomFloat(offset) + minDiff);
